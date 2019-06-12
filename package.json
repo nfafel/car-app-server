@@ -5,7 +5,7 @@
   "author": "Nicholas Fafel <nicholas.fafel@gmail.com>",
   "main": "nodeVersion.js",
   "scripts": {
-    "start": "node nodeVersion.js"
+    "start": "node nodeVersion.js",
   },
   "dependencies": {
     "cors": "^2.8.5",
