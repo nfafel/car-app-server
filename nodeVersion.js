@@ -24,6 +24,8 @@ const cars = [
     }
 ];
 
+var nextId = 3;
+
 function getCarIndexById(id) {
     for (var i = 0; i < cars.length; i++) {
         if (cars[i].id == id) {
@@ -53,7 +55,8 @@ app.get('/cars/:id', (req, res, next) => {
 
 app.post('/cars', (req, res, next) => {
     var newCar = req.query;
-    newCar.id = cars.length + 1;
+    newCar.id = nextId;
+    nextId++;
     cars.push(newCar);
     res.send( {cars: cars});
 });
