@@ -24,12 +24,13 @@ const cars = [
     }
 ];
 
-function getCarById(id) {
+function getCarIndexById(id) {
     for (var i = 0; i < cars.length; i++) {
         if (cars[i].id == id) {
-            return cars[i];
+            return i;
         }
     }
+    return 'No car with corresponding ID.'
 }
 
 // REST endpoints for "car" resource
@@ -45,20 +46,32 @@ app.get('/cars', (req, res, next) => {
 });
 
 app.get('/cars/:id', (req, res, next) => {
-    var car = getCarById(req.params.id);
+    const carIndex = getCarIndexById(req.params.id);
+    const car = cars[carIndex];
     res.send( {cars: car});
 });
 
 app.post('/cars', (req, res, next) => {
-    res.send( {version: `Current version of node: ${process.version}`});
+    var newCar = req.query;
+    newCar.id = cars.length + 1;
+    cars.push(newCar);
+    res.send( {cars: cars});
 });
 
 app.put('/cars/:id', (req, res, next) => {
-    res.send( {version: `Current version of node: ${process.version}`});
+    var carIndexToUpdate = getCarIndexById(req.params.id);
+    var carUpdates = req.query;
+    for (var property in carUpdates) {
+        cars[carIndexToUpdate][property] = carUpdates[property];
+    }
+    var updatedCar = cars[carIndexToUpdate];
+    res.send( {cars: updatedCar} );
 });
 
 app.delete('/cars/:id', (req, res, next) => {
-    res.send( {version: `Current version of node: ${process.version}`});
+    var carIndexToDelete = getCarIndexById(req.params.id);
+    cars.splice(carIndexToDelete);
+    res.send( {cars: cars});
 });
 
 app.listen(PORT, () => {
