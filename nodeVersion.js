@@ -42,8 +42,11 @@ function getCarIndexById(id) {
 //PUT /cars/3 - updates car with id=3
 //DELETE /cars/3 - deletes car with id=3
 
+app.get('/version', (req, res, next) => {
+    res.send( {version: `Current version of Node: ${process.version}`} );
+});
+
 app.get('/cars', (req, res, next) => {
-    //var carsText = 
     res.send( {cars: cars} );
 });
 
