@@ -24,6 +24,14 @@ const cars = [
     }
 ];
 
+function getCarById(id) {
+    for (var i = 0; i < cars.length; i++) {
+        if (cars[i].id == id) {
+            return cars[i];
+        }
+    }
+}
+
 // REST endpoints for "car" resource
 //GET /cars - returns an array of cars
 //GET /cars/3 - returns car with id=3
@@ -31,13 +39,14 @@ const cars = [
 //PUT /cars/3 - updates car with id=3
 //DELETE /cars/3 - deletes car with id=3
 
-app.get('/version', (req, res, next) => {
+app.get('/cars', (req, res, next) => {
     //var carsText = 
-    res.send( {version: cars} );
+    res.send( {cars: cars} );
 });
 
 app.get('/cars/:id', (req, res, next) => {
-    res.send( {version: `Current version of node: ${process.version}`});
+    var car = getCarById(req.params.id);
+    res.send( {cars: car});
 });
 
 app.post('/cars', (req, res, next) => {
