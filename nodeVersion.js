@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+var bodyParser = require('body-parser');
+
 const app = express();
 
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
