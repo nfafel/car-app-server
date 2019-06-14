@@ -61,7 +61,7 @@ app.get('/cars/:id', (req, res, next) => {
 });
 
 app.post('/cars', (req, res, next) => {
-    var newCar = req.query;
+    var newCar = req.body;
     newCar.id = nextId;
     nextId++;
     cars.push(newCar);
