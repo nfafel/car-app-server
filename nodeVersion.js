@@ -3,7 +3,7 @@ const cors = require('cors');
 var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
-var Db = require('mongodb').Db,
+var Db = require('mongodb').Db;
 
 const app = express();
 
