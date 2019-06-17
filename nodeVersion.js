@@ -13,7 +13,7 @@ app.use(cors());
 const PORT = process.env.PORT || 5000;
 const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 
-MongoClient.connect(MONGODB, function (err, client) {
+MongoClient.connect(MONGODB, { useNewUrlParser: true }, function (err, client) {
     var myReactAppDb = client.db('myReactAppDb');
     if(err) {
         console.log(err);
