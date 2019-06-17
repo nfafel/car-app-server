@@ -3,7 +3,6 @@ const cors = require('cors');
 var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
-var Db = require('mongodb').Db;
 
 const app = express();
 
@@ -13,8 +12,7 @@ app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
-
-MongoClient.connect("mongodb://localhost:27017/myReactAppDb", { useNewUrlParser: true }, function (err, client) {
+MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true }, function (err, client) {
     var myReactAppDb = client.db('myReactAppDb');
     if(err) {
         console.log(err);
