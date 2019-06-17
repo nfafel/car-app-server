@@ -15,7 +15,10 @@ const PORT = process.env.PORT || 5000;
 
 MongoClient.connect("mongodb://localhost:27017/myReactAppDb", { useNewUrlParser: true }, function (err, client) {
     var myReactAppDb = client.db('myReactAppDb');
-    if(err) throw err;
+    if(err) {
+        console.log(err);
+        throw err;
+    }
 
     app.get('/cars', (req, res, next) => {
         myReactAppDb.collection('cars').find().toArray( (err, results) => {
