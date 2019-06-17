@@ -43,7 +43,9 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
               console.log(err);
             }
       
-            res.send("car added");
+            myReactAppDb.collection('cars').find().toArray( (err, results) => {
+                res.send({cars: results} );
+            });
         });
     });
 
@@ -56,10 +58,13 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
         }
     
         myReactAppDb.collection("cars").updateOne({_id: ObjectId(req.params.id)}, {'$set':{'make': carUpdates.make, 'model': carUpdates.model, 'year': carUpdates.year, 'rating': carUpdates.rating}}, (err, result) => {
-          if(err) {
-            throw err;
-          }
-          res.send("car updated");
+            if(err) {
+                throw err;
+            }
+
+            myReactAppDb.collection('cars').find().toArray( (err, results) => {
+                res.send({cars: results} );
+            });
         });
     });
 
@@ -69,8 +74,10 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
             if(err) {
               throw err;
             }
-      
-            res.send("car deleted");
+
+            myReactAppDb.collection('cars').find().toArray( (err, results) => {
+                res.send({cars: results} );
+            });
           });
      });
 
