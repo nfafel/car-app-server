@@ -73,7 +73,8 @@ MongoClient.connect("mongodb://localhost:27017", function (err, client) {
 
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
-    });     
+    });   
+    client.close();  
 });
 
 app.get('/version', (req, res, next) => {
