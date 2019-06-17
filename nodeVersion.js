@@ -14,13 +14,16 @@ const PORT = process.env.PORT || 5000;
 const MONGODB = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const uri = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/test?retryWrites=true&w=majority";
 
-MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
-    var myReactAppDb = client.db('myReactAppDb');
+const client = new MongoClient(uri, { useNewUrlParser: true });
+
+client.connect(function (err, client) {
     if(err) {
         console.log(err);
         throw err;
     }
 
+    var myReactAppDb = client.db('myReactAppDb');
+    
     app.get('/cars', (req, res, next) => {
         myReactAppDb.collection('cars').find().toArray( (err, results) => {
             res.send(results)
