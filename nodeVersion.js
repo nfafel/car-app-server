@@ -15,15 +15,16 @@ const PORT = process.env.PORT || 5000;
 const uri = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/test?retryWrites=true&w=majority";
 
 //const client = new MongoClient(uri, { useNewUrlParser: true });
-
+var myReactAppDb;
 MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
     if(err) {
         console.log(err);
         throw err;
     }
 
-    var myReactAppDb = client.db('myReactAppDb');
+    myReactAppDb = client.db('myReactAppDb');
     
+    /*
     app.get('/cars', (req, res, next) => {
         myReactAppDb.collection('cars').find().toArray( (err, results) => {
             res.send(results)
@@ -75,6 +76,7 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
             res.send(req.params.id);
           });
      });
+     */
 
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
@@ -85,6 +87,56 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
 });
+
+app.get('/cars', (req, res, next) => {
+    myReactAppDb.collection('cars').find().toArray( (err, results) => {
+        res.send(results)
+    });
+});
+
+app.post('/cars', (req, res, next) => {
+    var newCar;
+    if (Object.values(req.query).length >= 1) {
+        newCar = req.query;
+    } else {
+        newCar = req.body;
+    }
+    
+    myReactAppDb.collection('cars').insertOne(newCar, (err, result) => {
+        if(err) {
+          console.log(err);
+        }
+  
+        res.send("car added");
+    });
+});
+
+app.put('/cars/:id', (req, res, next) => {
+    var carUpdates;
+    if (Object.values(req.query).length >= 1) {
+        carUpdates = req.query;
+    } else {
+        carUpdates = req.body;
+    }
+
+    myReactAppDb.collection("cars").updateOne({_id: ObjectId(req.params.id)}, {'$set':{'make': carUpdates.make, 'model': carUpdates.model, 'year': carUpdates.year, 'rating': carUpdates.rating}}, (err, result) => {
+      if(err) {
+        throw err;
+      }
+      res.send(JSON.stringify(carUpdates.model));
+    });
+});
+
+app.delete('/cars/:id', (req, res, next) => {
+    
+    myReactAppDb.collection('cars').deleteOne({_id : ObjectId(req.params.id)}, (err, result) => {
+        if(err) {
+          throw err;
+        }
+  
+        res.send(req.params.id);
+      });
+ });
 
 /*
 // "in-memory" data
