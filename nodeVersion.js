@@ -83,13 +83,7 @@ app.put('/cars/:id', (req, res, next) => {
 });
 
 app.delete('/cars/:id', (req, res, next) => {
-    var deleteIndex;
-    if (req.params.id != null) {
-        deleteIndex = req.params.id;
-    } else {
-        deleteIndex = req.body;
-    }
-    var carIndexToDelete = getCarIndexById(deleteIndex);
+    var carIndexToDelete = getCarIndexById(req.params.id);
     cars.splice(carIndexToDelete);
     res.send( {cars: cars});
 });
