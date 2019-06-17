@@ -26,7 +26,7 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
     
     app.get('/cars', (req, res, next) => {
         myReactAppDb.collection('cars').find().toArray( (err, results) => {
-            res.send(results)
+            res.send({cars: results} );
         });
     });
 
