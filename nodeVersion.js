@@ -84,7 +84,7 @@ app.put('/cars/:id', (req, res, next) => {
 
 app.delete('/cars/:id', (req, res, next) => {
     var carIndexToDelete = getCarIndexById(req.params.id);
-    cars.splice(carIndexToDelete);
+    cars.splice(carIndexToDelete, 1);
     res.send( {cars: cars});
 });
 
