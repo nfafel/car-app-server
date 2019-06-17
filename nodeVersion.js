@@ -59,7 +59,7 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
           if(err) {
             throw err;
           }
-          res.send(JSON.stringify(carUpdates.model));
+          res.send("car updated");
         });
     });
 
@@ -70,7 +70,7 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
               throw err;
             }
       
-            res.send(req.params.id);
+            res.send("car deleted");
           });
      });
 
