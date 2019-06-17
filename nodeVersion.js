@@ -13,18 +13,17 @@ app.use(cors());
 const PORT = process.env.PORT || 5000;
 //const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 const uri = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/test?retryWrites=true&w=majority";
-
+//const uri = "mongodb://localhost:27017";
 //const client = new MongoClient(uri, { useNewUrlParser: true });
-var myReactAppDb;
+
 MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
     if(err) {
         console.log(err);
         throw err;
     }
 
-    myReactAppDb = client.db('myReactAppDb');
+    var myReactAppDb = client.db('myReactAppDb');
     
-    /*
     app.get('/cars', (req, res, next) => {
         myReactAppDb.collection('cars').find().toArray( (err, results) => {
             res.send(results)
@@ -38,8 +37,6 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
         } else {
             newCar = req.body;
         }
-        newCar.id = nextId;
-        nextId++;
         
         myReactAppDb.collection('cars').insertOne(newCar, (err, result) => {
             if(err) {
@@ -76,13 +73,22 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, client) {
             res.send(req.params.id);
           });
      });
-     */
 
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
-    });   
-    client.close();  
+    });  
+
+    //client.close();  
 });
+
+app.get('/version', (req, res, next) => {
+    res.send( {version: `Current version of Node: ${process.version}`} );
+});
+
+/*
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+});  
 
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
@@ -136,7 +142,8 @@ app.delete('/cars/:id', (req, res, next) => {
   
         res.send(req.params.id);
       });
- });
+});
+*/
 
 /*
 // "in-memory" data
