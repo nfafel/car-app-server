@@ -75,7 +75,12 @@ app.post('/cars', (req, res, next) => {
 
 app.put('/cars/:id', (req, res, next) => {
     var carIndexToUpdate = getCarIndexById(req.params.id);
-    var carUpdates = req.query;
+    var carUpdates;
+    if (Object.values(req.query).length >= 1) {
+        carUpdates = req.query;
+    } else {
+        carUpdates = req.body;
+    }
     for (var property in carUpdates) {
         cars[carIndexToUpdate][property] = carUpdates[property];
     }
