@@ -79,8 +79,7 @@ app.put('/cars/:id', (req, res, next) => {
     for (var property in carUpdates) {
         cars[carIndexToUpdate][property] = carUpdates[property];
     }
-    var updatedCar = cars[carIndexToUpdate];
-    res.send( {cars: updatedCar} );
+    res.send( {cars: cars} );
 });
 
 app.delete('/cars/:id', (req, res, next) => {
