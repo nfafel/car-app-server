@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 var bodyParser = require('body-parser');
+var MongoClient = require('mongodb').MongoClient;
 
 const app = express();
 
@@ -9,6 +10,15 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
+
+MongoClient.connect("mongodb://localhost:27017/MyDb", { useNewUrlParser: true }, function (err, db) {
+    var myReactAppDb = db.db('myReactAppDb');
+    if(err) throw err;
+
+    app.listen(PORT, () => {
+        console.log(`Listening on port ${PORT}`);
+    });     
+});
 
 // "in-memory" data
 const cars = [
@@ -39,13 +49,6 @@ function getCarIndexById(id) {
     return 'No car with corresponding ID.'
 }
 
-// REST endpoints for "car" resource
-//GET /cars - returns an array of cars
-//GET /cars/3 - returns car with id=3
-//POST /cars - adds a new car
-//PUT /cars/3 - updates car with id=3
-//DELETE /cars/3 - deletes car with id=3
-
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
 });
@@ -69,8 +72,15 @@ app.post('/cars', (req, res, next) => {
     }
     newCar.id = nextId;
     nextId++;
-    cars.push(newCar);
-    res.send( {cars: cars});
+    myReactAppDb.collection('cars').save(newCar, (err, result) => {
+        if(err) {
+          console.log(err);
+        }
+  
+        res.send('name added successfully');
+    });
+    //cars.push(newCar);
+    res.send( {cars: cars} );
 });
 
 app.put('/cars/:id', (req, res, next) => {
