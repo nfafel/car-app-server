@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+//const mongoose = require('mongoose');
+
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
@@ -14,6 +16,10 @@ process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mo
 
 const PORT = process.env.PORT || 5000;
 const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
+
+//mongoose.connect(MONGODB);
+//mongoose.Promise = global.Promise;
+//const myReactAppDb = mongoose.connection;
 
 MongoClient.connect(MONGODB, { useNewUrlParser: true }, function (err, client) {
     if(err) {
