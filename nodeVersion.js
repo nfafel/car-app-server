@@ -11,8 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
-const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
-//const uri = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/test?retryWrites=true&w=majority";
+//const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
+const MONGODB = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/test?retryWrites=true&w=majority";
 
 MongoClient.connect(MONGODB, { useNewUrlParser: true }, function (err, client) {
     if(err) {
