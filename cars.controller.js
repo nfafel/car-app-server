@@ -1,32 +1,49 @@
 const Cars = require('./cars.model');
 
 
-exports.car_get = (req, res, next) => {
-    myReactAppDb.collection('cars').find().toArray( (err, results) => {
-        res.send({cars: results} );
+exports.cars_get = (req, res, next) => {
+    Cars.find({}, (err, results) => {
+        if(err){
+            console.log(err);
+        } else{
+            res.send({cars: results} );
+        }
     });
 }
 
-exports.car_post = (req, res, next) => {
+exports.cars_post = (req, res, next) => {
     var newCar;
     if (Object.values(req.query).length >= 1) {
-        newCar = req.query;
+        newCar = new Cars({
+            make: req.query.make,
+            model: req.query.model,
+            year: req.query.year,
+            rating: req.query.rating
+        })
     } else {
-        newCar = req.body;
+        newCar = new Cars({
+            make: req.body.make,
+            model: req.body.model,
+            year: req.body.year,
+            rating: req.body.rating
+        })
     }
     
-    myReactAppDb.collection('cars').insertOne(newCar, (err, result) => {
+    newCar.save( (err, result) => {
         if(err) {
           console.log(err);
         }
-  
-        myReactAppDb.collection('cars').find().toArray( (err, results) => {
-            res.send({cars: results} );
+        Cars.find({}, (err, results) => {
+            if(err){
+                console.log(err);
+            } else{
+                res.send({cars: results} );
+            }
         });
     });
 }
 
-exports.car_put = (req, res, next) => {
+exports.cars_put = (req, res, next) => {
     var carUpdates;
     if (Object.values(req.query).length >= 1) {
         carUpdates = req.query;
@@ -34,27 +51,35 @@ exports.car_put = (req, res, next) => {
         carUpdates = req.body;
     }
 
-    myReactAppDb.collection("cars").updateOne({_id: ObjectId(req.params.id)}, {'$set':{'make': carUpdates.make, 'model': carUpdates.model, 'year': carUpdates.year, 'rating': carUpdates.rating}}, (err, result) => {
+    Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, (err, results) => {
         if(err) {
             throw err;
         }
 
-        myReactAppDb.collection('cars').find().toArray( (err, results) => {
-            res.send({cars: results} );
+        Cars.find({}, (err, results) => {
+            if(err){
+                console.log(err);
+            } else{
+                res.send({cars: results} );
+            }
         });
     });
 }
 
-exports.car_delete = (req, res, next) => {
+exports.cars_delete = (req, res, next) => {
     
-    myReactAppDb.collection('cars').deleteOne({_id : ObjectId(req.params.id)}, (err, result) => {
+    Cars.findByIdAndRemove(req.params.id, (err, results) => {
         if(err) {
-          throw err;
+            throw err;
         }
 
-        myReactAppDb.collection('cars').find().toArray( (err, results) => {
-            res.send({cars: results} );
+        Cars.find({}, (err, results) => {
+            if(err){
+                console.log(err);
+            } else{
+                res.send({cars: results} );
+            }
         });
-      });
+    });
 }
 
