@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const cars = require('./cars.route'); // Imports routes for the cars
+const repairs = require('./repairs.route'); // Imports routes for the repairs
 const app = express();
 
 //Set up mongoose connection
@@ -19,6 +20,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 app.use('/cars', cars);
+app.use('/repairs', repairs)
 
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
