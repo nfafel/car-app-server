@@ -6,6 +6,8 @@ const repairs_controller = require('./repairs.controller');
 
 repairsRouter.get('/', repairs_controller.repairs_get);
 
+repairsRouter.get('/:id', repairs_controller.repairs_getById)
+
 repairsRouter.post('/', repairs_controller.repairs_post);
 
 repairsRouter.put('/:id', repairs_controller.repairs_put);

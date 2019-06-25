@@ -10,6 +10,16 @@ exports.repairs_get = (req, res, next) => {
     });
 }
 
+exports.repairs_getById = (req, res, next) => {
+    Repairs.findOne({carId: req.params.id}, (err, results) => {
+        if(err){
+            console.log(err);
+        } else{
+            res.send({repairedCar: results} );
+        }
+    });
+}
+
 exports.repairs_post = (req, res, next) => {
     var newRepair;
     if (Object.values(req.query).length >= 1) {
