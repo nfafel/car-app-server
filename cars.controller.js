@@ -11,6 +11,16 @@ exports.cars_get = (req, res, next) => {
     });
 }
 
+exports.cars_getById = (req, res, next) => {
+    Cars.findById(req.params.id, (err, result) => {
+        if(err){
+            console.log(err);
+        } else{
+            res.send({car: result} );
+        }
+    });
+}
+
 exports.cars_post = (req, res, next) => {
     var newCar;
     if (Object.values(req.query).length >= 1) {
