@@ -55,7 +55,7 @@ exports.repairs_put = (req, res, next) => {
         repairUpdates = req.body;
     }
 
-    Repair.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, (err, results) => {
+    Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, (err, results) => {
         if(err) {
             throw err;
         }
