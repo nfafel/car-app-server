@@ -1,6 +1,5 @@
 const Repairs = require('./repairs.model');
 
-
 exports.repairs_get = (req, res, next) => {
     Repairs.find({}, (err, results) => {
         if(err){
