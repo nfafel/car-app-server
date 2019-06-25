@@ -14,7 +14,7 @@ exports.repairs_post = (req, res, next) => {
     var newRepair;
     if (Object.values(req.query).length >= 1) {
         newRepair = new Repairs({
-            carId: req.query.carId,
+            car: req.query.car,
             description: req.query.description,
             estTime: req.query.estTime,
             cost: req.query.cost,
@@ -23,7 +23,7 @@ exports.repairs_post = (req, res, next) => {
         })
     } else {
         newRepair = new Repairs({
-            carId: req.body.carId,
+            car: req.body.car,
             description: req.body.description,
             estTime: req.body.estTime,
             cost: req.body.cost,

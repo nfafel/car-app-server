@@ -3,9 +3,9 @@ const carsRouter = express.Router();
 
 const cars_controller = require('./cars.controller');
 
-carsRouter.get('/:id', cars_controller.cars_getById);
-
 carsRouter.get('/', cars_controller.cars_get);
+
+carsRouter.get('/:id', cars_controller.cars_getById);
 
 carsRouter.post('/', cars_controller.cars_post);
 
