@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 let RepairsSchema = new Schema({
     car: Object,
     description: String,
-    estTime: String,
+    date: Date,
     cost: String,
     progress: String,
     technician: String

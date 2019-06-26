@@ -26,7 +26,7 @@ exports.repairs_post = (req, res, next) => {
         newRepair = new Repairs({
             car: req.query.car,
             description: req.query.description,
-            estTime: req.query.estTime,
+            date: req.query.date,
             cost: req.query.cost,
             progress: req.query.progress,
             technician: req.query.technician
@@ -35,7 +35,7 @@ exports.repairs_post = (req, res, next) => {
         newRepair = new Repairs({
             car: req.body.car,
             description: req.body.description,
-            estTime: req.body.estTime,
+            date: req.body.date,
             cost: req.body.cost,
             progress: req.body.progress,
             technician: req.body.technician
