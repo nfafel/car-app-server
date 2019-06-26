@@ -11,7 +11,7 @@ exports.repairs_get = (req, res, next) => {
 }
 
 exports.repairs_getByCarId = (req, res, next) => {
-    Repairs.findOne({'car._id': req.params.id}, (err, results) => {
+    Repairs.find({'car._id': req.params.id}, (err, results) => {
         if(err) {
             console.log(err);
         } else {
