@@ -21,15 +21,14 @@ exports.cars_getById = (req, res, next) => {
     });
 }
 
-exports.getAllYears = async() => {
-    const response = await fetch('https://www.carqueryapi.com/api/0.3/?callback=?&cmd=getYears');
-    const body = await response.json();
-  
-    if (response.status !== 200) {
-      throw Error(body) 
-    }
-    return body;
-  };
+/*
+exports.cars_getAllYears = async() => {
+    const response = await fetch('https://www.carqueryapi.com/api/0.3/?callback=?&cmd=getYears', {
+        mode: 'cors'
+    });
+    return response;
+};
+*/
 
 exports.cars_post = (req, res, next) => {
     var newCar;

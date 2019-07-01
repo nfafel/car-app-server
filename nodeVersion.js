@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const proxy = require('http-proxy-middleware');
 
 const cars = require('./cars.route'); // Imports routes for the cars
 const repairs = require('./repairs.route'); // Imports routes for the repairs
@@ -21,6 +22,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 app.use('/cars', cars);
 app.use('/repairs', repairs);
+
+app.use('/api', proxy({ 
+    target: 'https://www.carqueryapi.com',
+    changeOrigin: true
+})); //Funnel car year, make, and model requests to https://www.carqueryapi.com
 
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
