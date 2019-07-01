@@ -7,6 +7,8 @@ carsRouter.get('/', cars_controller.cars_get);
 
 carsRouter.get('/:id', cars_controller.cars_getById);
 
+carsRouter.get('/getAllYears', cars_controller.cars_getAllYears);
+
 carsRouter.post('/', cars_controller.cars_post);
 
 carsRouter.put('/:id', cars_controller.cars_put);
