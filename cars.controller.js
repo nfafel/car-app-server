@@ -21,15 +21,6 @@ exports.cars_getById = (req, res, next) => {
     });
 }
 
-/*
-exports.cars_getAllYears = async() => {
-    const response = await fetch('https://www.carqueryapi.com/api/0.3/?callback=?&cmd=getYears', {
-        mode: 'cors'
-    });
-    return response;
-};
-*/
-
 exports.cars_post = (req, res, next) => {
     var newCar;
     if (Object.values(req.query).length >= 1) {
