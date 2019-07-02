@@ -1,4 +1,5 @@
 const Cars = require('./cars.model');
+const Repairs = require('./repairs.model')
 
 
 exports.cars_get = (req, res, next) => {
@@ -79,6 +80,23 @@ exports.cars_put = (req, res, next) => {
 exports.cars_delete = (req, res, next) => {
     
     Cars.findByIdAndRemove(req.params.id, (err, results) => {
+        if(err) {
+            throw err;
+        }
+
+        Cars.find({}, (err, results) => {
+            if(err){
+                console.log(err);
+            } else{
+                res.send({cars: results} );
+            }
+        });
+    });
+}
+
+exports.cars_deleteRepairs = (req, res, next) => {
+    
+    Repairs.deleteMany( {'car._id' : req.params.id}, (err, results) => {
         if(err) {
             throw err;
         }
