@@ -9,8 +9,6 @@ const app = express();
 
 //Set up mongoose connection
 const mongoose = require('mongoose');
-console.log(process.env.MONGODB);
-//process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppDb?retryWrites=true&w=majority";
 const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 
 mongoose.connect(MONGODB, {useNewUrlParser: true});
