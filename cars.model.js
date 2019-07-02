@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+/*
 let CarsSchema = new Schema({
     make: String,
     model: String,
     year: Number,
     rating: String
 });
+*/
 
-/*
 let CarsSchema = new Schema({
     make: {
         type: String,
@@ -20,6 +21,8 @@ let CarsSchema = new Schema({
     },
     year: {
         type: Number,
+        min: [1941, 'Too Old'],
+        max: [new Date().getFullYear(), 'Too New'],
         required: true
     },
     rating: {
@@ -29,7 +32,7 @@ let CarsSchema = new Schema({
         required: false
     },
 });
-*/
+
 
 
 // Export the model

@@ -63,9 +63,9 @@ exports.cars_put = (req, res, next) => {
         carUpdates = req.body;
     }
 
-    Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, (err, results) => {
+    Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true }, (err, results) => {
         if(err) {
-            throw err;
+            console.log(err);
         }
 
         Cars.find({}, (err, results) => {
