@@ -11,7 +11,7 @@ carsRouter.post('/', cars_controller.cars_post);
 
 carsRouter.put('/:id', cars_controller.cars_put);
 
-carsRouter.delete('/deleteRepairs/:id', cars_controller.cars_deleteRepairs)
+carsRouter.delete('/:id/repairs', cars_controller.cars_deleteRepairs)
 
 carsRouter.delete('/:id', cars_controller.cars_delete);
 

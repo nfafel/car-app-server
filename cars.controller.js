@@ -97,7 +97,7 @@ exports.cars_delete = (req, res, next) => {
 exports.cars_deleteRepairs = (req, res, next) => {
     
     Repairs.deleteMany( {'car._id' : req.params.id}, (err, results) => {
-        if(err) {
+        if (err) {
             throw err;
         }
 
