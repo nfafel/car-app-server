@@ -123,10 +123,24 @@ exports.cars_getYears = async(req, res, next) => {
     res.send(body);
 }
 
-exports.cars_getMakes = (req, res, next) => {
-
+exports.cars_getMakes = async(req, res, next) => {
+    var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${req.params.year}`, {
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        }
+    });
+    var body = await response.json();
+    res.send(body);
 }
 
-exports.cars_getModels = (req, res, next) => {
-
+exports.cars_getModels = async(req, res, next) => {
+    var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${req.params.make}&year=${req.params.year}`, {
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        }
+    });
+    var body = await response.json();
+    res.send(body);
 }
