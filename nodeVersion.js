@@ -9,6 +9,7 @@ const app = express();
 
 //Set up mongoose connection
 const mongoose = require('mongoose');
+process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppDb?retryWrites=true&w=majority";
 const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 
 mongoose.connect(MONGODB, {useNewUrlParser: true});
@@ -22,10 +23,10 @@ app.use(cors());
 app.use('/cars', cars);
 app.use('/repairs', repairs);
 
-app.use('/api', proxy({ 
-    target: 'https://www.carqueryapi.com',
-    changeOrigin: true
-})); //Funnel car year, make, and model requests to https://www.carqueryapi.com
+//app.use('/api', proxy({ 
+//    target: 'https://www.carqueryapi.com',
+//    changeOrigin: true
+//})); //Funnel car year, make, and model requests to https://www.carqueryapi.com
 
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
