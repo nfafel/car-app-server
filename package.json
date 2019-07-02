@@ -5,7 +5,8 @@
   "author": "Nicholas Fafel <nicholas.fafel@gmail.com>",
   "main": "nodeVersion.js",
   "scripts": {
-    "start": "node nodeVersion.js"
+    "start": "node nodeVersion.js",
+    "test": "mocha serverTests.js --timeout 10000"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -15,5 +16,10 @@
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.0",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.1.4"
   }
 }
