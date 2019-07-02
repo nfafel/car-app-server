@@ -2,12 +2,31 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let RepairsSchema = new Schema({
-    car: Object,
-    description: String,
-    date: Date,
-    cost: String,
-    progress: String,
-    technician: String
+    car: {
+        type: Object,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
+    },
+    cost: {
+        type: Number,
+        min: [0, "Can't have a negative cost"],
+        required: true
+    },
+    progress: {
+        type: String,
+        required: true
+    }, 
+    technician: {
+        type: String,
+        required: true
+    }
 });
 
 

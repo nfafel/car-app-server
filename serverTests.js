@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
 let Cars = require('./cars.model');
+let Repairs = require('./repairs.model');
 
 //Require the dev-dependencies
 let chai = require('chai');
@@ -104,7 +105,7 @@ describe('Cars', () => {
             let car = new Cars({make: "acura", model: "TSX", year: 2012, rating: 9})
             car.save((err, car) => {
                   chai.request(server)
-                  .put('/cars/' + car._id)
+                  .put('/cars/' + car.id)
                   .send({make: "acura", model: "TSX", year: 2015, rating: 9})
                   .end((err, res) => {
                         res.should.have.status(200);
@@ -116,5 +117,148 @@ describe('Cars', () => {
         });
     });
 
+});
+
+
+describe('Repairs', () => {
+    beforeEach((done) => { //Before each test we empty the database
+        Repairs.deleteMany({}, (err) => { 
+           done();           
+        });        
+    });
+    /*
+    * Test the /GET route
+    */
+    describe('/GET repair', () => {
+        it('it should GET all the repairs', (done) => {
+            chai.request(server)
+                .get('/repairs')
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.repairs.should.be.a('array');
+                    res.body.repairs.length.should.be.eql(0);
+                done();
+                });
+        });
+    });
+
+    
+    /*
+    * Test the /POST route
+    */
+    describe('/POST repair', () => {
+        it('it should POST a repair', (done) => {
+            let repair = new Repairs( {
+                car: {
+                    "_id": "5d1baa6a4d4ebc000ff358ef",
+                    "make": "lamborghini",
+                    "model": "Aventador",
+                    "year": 2019,
+                    "rating": 9,
+                    "__v": 0
+                },
+                description: "Cracked Windshield",
+                date: "2019-07-03T00:00:00.000Z",
+                cost: 30000,
+                progress: "completed",
+                technician: "Jerry"
+
+            } );
+        chai.request(server)
+            .post('/repairs')
+            .send(repair)
+            .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.repairs.should.be.a('array');
+                    res.body.repairs[0].car.should.be.a('object');
+                    res.body.repairs[0].should.have.property('description').eql("Cracked Windshield");
+                    res.body.repairs[0].should.have.property('date').eql("2019-07-03T00:00:00.000Z");
+                    res.body.repairs[0].should.have.property('cost').eql(30000);
+                    res.body.repairs[0].should.have.property('progress').eql("completed");
+                    res.body.repairs[0].should.have.property('technician').eql("Jerry");
+                done();
+            });
+        });
+    });
+
+    /*
+    * Test the /DELETE/:id route
+    */
+    describe('/DELETE/:id repair', () => {
+        it('it should DELETE a repair given the id', (done) => {
+            let repair = new Repairs( {
+                car: {
+                    "_id": "5d1baa6a4d4ebc000ff358ef",
+                    "make": "lamborghini",
+                    "model": "Aventador",
+                    "year": 2019,
+                    "rating": 9,
+                    "__v": 0
+                },
+                description: "Cracked Windshield",
+                date: "2019-07-03T00:00:00.000Z",
+                cost: 30000,
+                progress: "completed",
+                technician: "Jerry"
+
+            } );            
+            repair.save((err, repair) => {
+                chai.request(server)
+                .delete('/repairs/' + repair.id)
+                .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.repairs.should.be.a('array');
+                        res.body.repairs.length.should.be.eql(0);
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('/PUT/:id repair', () => {
+        it('it should UPDATE a repair given the id', (done) => {
+            let repair = new Repairs( {
+                car: {
+                    "_id": "5d1baa6a4d4ebc000ff358ef",
+                    "make": "lamborghini",
+                    "model": "Aventador",
+                    "year": 2019,
+                    "rating": 9,
+                    "__v": 0
+                },
+                description: "Cracked Windshield",
+                date: "2019-07-03T00:00:00.000Z",
+                cost: 30000,
+                progress: "completed",
+                technician: "Jerry"
+
+            } );
+            repair.save((err, repair) => {
+                chai.request(server)
+                .put('/repairs/' + repair.id)
+                .send({
+                car: {
+                    "_id": "5d1baa6a4d4ebc000ff358ef",
+                    "make": "lamborghini",
+                    "model": "Aventador",
+                    "year": 2019,
+                    "rating": 9,
+                    "__v": 0
+                },
+                description: "Engine",
+                date: "2019-07-03T00:00:00.000Z",
+                cost: 30000,
+                progress: "completed",
+                technician: "Jerry"
+                })
+                  .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.repairs.should.be.a('array');
+                        res.body.repairs[0].should.have.property('description').eql('Engine');
+                    done();
+                  });
+            });
+        });
+    });
 
 });
