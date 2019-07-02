@@ -13,8 +13,6 @@ carsRouter.get('/makes/:year', cars_controller.cars_getMakes);
 
 carsRouter.get('/models/:year/:make', cars_controller.cars_getModels);
 
-carsRouter.get('/', cars_controller.cars_get);
-
 carsRouter.post('/', cars_controller.cars_post);
 
 carsRouter.put('/:id', cars_controller.cars_put);

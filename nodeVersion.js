@@ -9,7 +9,14 @@ const app = express();
 
 //Set up mongoose connection
 const mongoose = require('mongoose');
-const MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
+
+var MONGODB;
+if (process.env.NODE_ENV == 'test') {
+    process.env['MONGODBTEST'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppTestDb?retryWrites=true&w=majority";
+    MONGODB = process.env.MONGODBTEST || "mongodb://localhost:27017";
+} else {
+    MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
+}
 
 mongoose.connect(MONGODB, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;

@@ -35,11 +35,30 @@ describe('Cars', () => {
         });
     });
 
+    describe('/GET car', () => {
+        it('it should GET a car by id', (done) => {
+            let car = new Cars({make: "honda", model: "accord", year: 2005, rating: 7});
+            car.save((err, car) => {
+                chai.request(server)
+                    .get('/cars/' + car.id)
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.car.should.be.a('object');
+                        res.body.car.should.have.property('make').eql('honda');
+                        res.body.car.should.have.property('model').eql('accord');
+                        res.body.car.should.have.property('year').eql(2005);
+                        res.body.car.should.have.property('rating').eql(7);
+                    done();
+                });
+            });
+        });
+    });
+
     /*
     * Test the /POST route
     */
     describe('/POST car', () => {
-        it('it should not POST a car', (done) => {
+        it('it should POST a car', (done) => {
             let car = {
                 make: "honda",
                 model: "accord",
@@ -52,6 +71,10 @@ describe('Cars', () => {
             .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
+                    res.body.cars[0].should.have.property('make').eql('honda');
+                    res.body.cars[0].should.have.property('model').eql('accord');
+                    res.body.cars[0].should.have.property('year').eql(2000);
+                    res.body.cars[0].should.have.property('rating').eql(4);
                 done();
             });
         });
@@ -63,19 +86,35 @@ describe('Cars', () => {
     describe('/DELETE/:id car', () => {
         it('it should DELETE a car given the id', (done) => {
             let car = new Cars({make: "honda", model: "accord", year: 2005, rating: 7})
-            car.save((err, book) => {
+            car.save((err, car) => {
                 chai.request(server)
-                .delete('/cars/' + car._id)
+                .delete('/cars/' + car.id)
                 .end((err, res) => {
                         res.should.have.status(200);
                         res.body.cars.should.be.a('array');
-                        //res.body.should.have.property('message').eql('Book successfully deleted!');
-                        //res.body.cars.should.have.property('ok').eql(1);
-                        //res.body.cars.should.have.property('n').eql(1);
+                        res.body.cars.length.should.be.eql(0);
                     done();
                 });
             });
         });
     });
+
+    describe('/PUT/:id car', () => {
+        it('it should UPDATE a car given the id', (done) => {
+            let car = new Cars({make: "acura", model: "TSX", year: 2012, rating: 9})
+            car.save((err, car) => {
+                  chai.request(server)
+                  .put('/cars/' + car._id)
+                  .send({make: "acura", model: "TSX", year: 2015, rating: 9})
+                  .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.cars.should.be.a('array');
+                        res.body.cars[0].should.have.property('year').eql(2015);
+                    done();
+                  });
+            });
+        });
+    });
+
 
 });
