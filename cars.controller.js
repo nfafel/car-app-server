@@ -111,3 +111,25 @@ exports.cars_deleteRepairs = (req, res, next) => {
     });
 }
 
+exports.cars_getYears = async(req, res, next) => {
+    const response = await fetch('https://tranquil-caverns-41069.herokuapp.com/api/0.3/?cmd=getYears', {
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        }
+    });
+    const body = await response.json();
+
+    if (response.status !== 200) {
+        throw Error(body) 
+    }
+    return body;
+}
+
+exports.cars_getMakes = (req, res, next) => {
+
+}
+
+exports.cars_getModels = (req, res, next) => {
+
+}
