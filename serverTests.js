@@ -82,8 +82,8 @@ describe('Cars', () => {
     });
 
     /*
-    * Test the /POST route with an error
-    */
+     * Test the /POST route with an error
+     */
     describe('/POST car', () => {
         it('it should POST a car with an error', (done) => {
             let car = {
@@ -97,10 +97,8 @@ describe('Cars', () => {
             .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
-                    res.body.cars[0].should.have.property('make').eql('honda');
-                    res.body.cars[0].should.have.property('model').eql('accord');
-                    res.body.cars[0].should.have.property('year').eql(2000);
-                    res.body.cars[0].should.have.property('rating').eql(4);
+                    res.body.should.have.property('errors');
+                    res.body.errors.have.property('year').eql('required');
                 done();
             });
         });
@@ -148,11 +146,12 @@ describe('Cars', () => {
             car.save((err, car) => {
                   chai.request(server)
                   .put('/cars/' + car.id)
-                  .send({make: "acura", model: "TSX", year: 2015})
+                  .send({make: "acura", year: 2015, rating: 9})
                   .end((err, res) => {
                         res.should.have.status(200);
-                        res.body.cars.should.be.a('array');
-                        res.body.cars[0].should.have.property('year').eql(2015);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property('errors');
+                        res.body.errors.should.have.property('model').eql('required');
                     done();
                   });
             });
@@ -246,7 +245,6 @@ describe('Repairs', () => {
                 description: "Cracked Windshield",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
-                progress: "completed",
                 technician: "Jerry"
 
             } );
@@ -255,13 +253,9 @@ describe('Repairs', () => {
             .send(repair)
             .end((err, res) => {
                     res.should.have.status(200);
-                    res.body.repairs.should.be.a('array');
-                    res.body.repairs[0].car.should.be.a('object');
-                    res.body.repairs[0].should.have.property('description').eql("Cracked Windshield");
-                    res.body.repairs[0].should.have.property('date').eql("2019-07-03T00:00:00.000Z");
-                    res.body.repairs[0].should.have.property('cost').eql(30000);
-                    res.body.repairs[0].should.have.property('progress').eql("completed");
-                    res.body.repairs[0].should.have.property('technician').eql("Jerry");
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('errors');
+                    res.body.errors.should.have.property('progress');
                 done();
             });
         });
@@ -381,14 +375,15 @@ describe('Repairs', () => {
                 },
                 description: "Engine",
                 date: "2019-07-03T00:00:00.000Z",
-                cost: 30000,
+                cost: '30000',
                 progress: "completed",
                 technician: "Jerry"
                 })
                 .end((err, res) => {
                         res.should.have.status(200);
-                        res.body.repairs.should.be.a('array');
-                        res.body.repairs[0].should.have.property('description').eql('Engine');
+                        res.body.should.be.a('object');
+                        res.body.should.have.property('errors');
+                        res.body.errors.should.be.a('number');
                     done();
                 });
             });

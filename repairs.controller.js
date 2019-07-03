@@ -44,15 +44,16 @@ exports.repairs_post = (req, res, next) => {
     
     newRepair.save( (err, result) => {
         if(err) {
-          console.log(err);
+            res.send(err);
+        } else {
+            Repairs.find({}, (err, results) => {
+                if(err){
+                    console.log(err);
+                } else{
+                    res.send({repairs: results} );
+                }
+            });
         }
-        Repairs.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({repairs: results} );
-            }
-        });
     });
 }
 
@@ -66,16 +67,16 @@ exports.repairs_put = (req, res, next) => {
 
     Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, (err, results) => {
         if(err) {
-            throw err;
+            res.send(err);
+        } else {
+            Repairs.find({}, (err, results) => {
+                if(err){
+                    console.log(err);
+                } else{
+                    res.send({repairs: results} );
+                }
+            });
         }
-
-        Repairs.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({repairs: results} );
-            }
-        });
     });
 }
 

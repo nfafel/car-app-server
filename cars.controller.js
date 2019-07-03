@@ -43,15 +43,16 @@ exports.cars_post = (req, res, next) => {
     
     newCar.save( (err, result) => {
         if(err) {
-          console.log(err);
+            res.send(err);
+        } else {
+            Cars.find({}, (err, results) => {
+                if(err){
+                    console.log(err);
+                } else{
+                    res.send({cars: results} );
+                }
+            });
         }
-        Cars.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({cars: results} );
-            }
-        });
     });
 }
 
@@ -65,16 +66,16 @@ exports.cars_put = (req, res, next) => {
 
     Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true }, (err, results) => {
         if(err) {
-            console.log(err);
+            res.send(err);
+        } else {
+            Cars.find({}, (err, results) => {
+                if(err){
+                    console.log(err);
+                } else{
+                    res.send({cars: results} );
+                }
+            });
         }
-
-        Cars.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({cars: results} );
-            }
-        });
     });
 }
 
