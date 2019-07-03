@@ -65,7 +65,7 @@ exports.repairs_put = (req, res, next) => {
         repairUpdates = req.body;
     }
 
-    Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, (err, results) => {
+    Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true }, (err, results) => {
         if(err) {
             res.send(err);
         } else {

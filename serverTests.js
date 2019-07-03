@@ -98,7 +98,7 @@ describe('Cars', () => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.should.have.property('errors');
-                    res.body.errors.have.property('year').eql('required');
+                    res.body.errors.should.have.property('year');
                 done();
             });
         });
@@ -146,12 +146,12 @@ describe('Cars', () => {
             car.save((err, car) => {
                   chai.request(server)
                   .put('/cars/' + car.id)
-                  .send({make: "acura", year: 2015, rating: 9})
+                  .send({make: "acura", model:"", year: 2015, rating: 9})
                   .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.be.a('object');
                         res.body.should.have.property('errors');
-                        res.body.errors.should.have.property('model').eql('required');
+                        res.body.errors.should.have.property('model');
                     done();
                   });
             });
@@ -375,7 +375,7 @@ describe('Repairs', () => {
                 },
                 description: "Engine",
                 date: "2019-07-03T00:00:00.000Z",
-                cost: '30000',
+                cost: "three thousand",
                 progress: "completed",
                 technician: "Jerry"
                 })
