@@ -197,14 +197,7 @@ describe('Repairs', () => {
     describe('/POST repair', () => {
         it('it should POST a repair', (done) => {
             let repair = new Repairs( {
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "year": 2019,
-                    "rating": 9,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Cracked Windshield",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
@@ -218,7 +211,6 @@ describe('Repairs', () => {
             .end((err, res) => {
                     res.should.have.status(200);
                     res.body.repairs.should.be.a('array');
-                    res.body.repairs[0].car.should.be.a('object');
                     res.body.repairs[0].should.have.property('description').eql("Cracked Windshield");
                     res.body.repairs[0].should.have.property('date').eql("2019-07-03T00:00:00.000Z");
                     res.body.repairs[0].should.have.property('cost').eql(30000);
@@ -235,13 +227,7 @@ describe('Repairs', () => {
     describe('/POST repair', () => {
         it('it should POST a repair with an error', (done) => {
             let repair = new Repairs( {
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "rating": 9,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Cracked Windshield",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
@@ -267,14 +253,7 @@ describe('Repairs', () => {
     describe('/DELETE/:id repair', () => {
         it('it should DELETE a repair given the id', (done) => {
             let repair = new Repairs( {
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "year": 2019,
-                    "rating": 9,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Cracked Windshield",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
@@ -298,14 +277,7 @@ describe('Repairs', () => {
     describe('/PUT/:id repair', () => {
         it('it should UPDATE a repair given the id', (done) => {
             let repair = new Repairs( {
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "year": 2019,
-                    "rating": 9,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Cracked Windshield",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
@@ -317,14 +289,7 @@ describe('Repairs', () => {
                 chai.request(server)
                 .put('/repairs/' + repair.id)
                 .send({
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "year": 2019,
-                    "rating": 9,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Engine",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
@@ -347,14 +312,7 @@ describe('Repairs', () => {
     describe('/PUT/:id repair', () => {
         it('it should UPDATE a repair given the id with an error', (done) => {
             let repair = new Repairs( {
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "year": 2019,
-                    "rating": 9,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Cracked Windshield",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: 30000,
@@ -366,13 +324,7 @@ describe('Repairs', () => {
                 chai.request(server)
                 .put('/repairs/' + repair.id)
                 .send({
-                car: {
-                    "_id": "5d1baa6a4d4ebc000ff358ef",
-                    "make": "lamborghini",
-                    "model": "Aventador",
-                    "year": 2019,
-                    "__v": 0
-                },
+                car_id: "5d1baa6a4d4ebc000ff358ef",
                 description: "Engine",
                 date: "2019-07-03T00:00:00.000Z",
                 cost: "three thousand",
