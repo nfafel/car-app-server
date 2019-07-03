@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let RepairsSchema = new Schema({
-    car: {
-        type: Object,
+    car_id: {
+        type: Schema.Types.ObjectId,
         required: true
     },
     description: {
@@ -22,7 +22,7 @@ let RepairsSchema = new Schema({
     progress: {
         type: String,
         required: true
-    }, 
+    },
     technician: {
         type: String,
         required: true
