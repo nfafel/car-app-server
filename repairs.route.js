@@ -5,7 +5,7 @@ const repairs_controller = require('./repairs.controller');
 
 repairsRouter.get('/', repairs_controller.repairs_get);
 
-repairsRouter.get('/repairForCar/:id', repairs_controller.repairs_getByCarId)
+repairsRouter.get('/:id/repairsForCar', repairs_controller.repairs_getByCarId)
 
 repairsRouter.post('/', repairs_controller.repairs_post);
 
