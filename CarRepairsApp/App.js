@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { createBottomTabNavigator, createAppContainer } from "react-navigation";
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,56 +13,48 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-class HomeScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>Home</Text>
-      </View>
-    );
-  }
-}
-
-class CarsScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>Cars</Text>
-      </View>
-    );
-  }
-}
-
-class RepairsScreen extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{color: 'black', fontSize: 25, fontWeight: 'bold'}}>Repairs</Text>
-      </View>
-    );
-  }
-}
-
-const TabNavigator = createBottomTabNavigator(
-  {
-    Home: {screen: HomeScreen},
-    Cars: {screen: CarsScreen},
-    Repairs: {screen: RepairsScreen},
-  },
-  {
-    tabBarOptions: {
-      labelStyle: {
-        fontSize: 20,
-        margin: 0,
-        padding: 0
-      }
-    }
-  }
-);
-
-const AppContainer = createAppContainer(TabNavigator);
+import AppContainer from './AppTabNavigator';
+import { thisExpression } from '@babel/types';
 
 class App extends Component {
+  constructor(props) {
+    super(props) 
+    this.state = {
+      version: null
+    }
+  }
+
+  componentDidMount() {
+    this.getVersionData()
+      .then(res => this.setState({ version: res.version }))
+      .catch(err => console.log(err));
+
+  }
+
+  getVersionData = async() => {
+    const response = await fetch('https://tranquil-caverns-41069.herokuapp.com/version');
+    const body = await response.json();
+
+    if (response.status !== 200) {
+      throw Error(body) 
+    }
+    return body;
+  };
+
+  getVersionText = () => {
+    if (this.state.version == null) {
+      return (
+      <View style={{alignSelf: 'center'}}>
+        <Text style={styles.version}>Loading...</Text>
+      </View>
+      )
+    } 
+    return (
+      <View style={{alignSelf: 'center'}}>
+        <Text style={styles.version}>{this.state.version}</Text>
+      </View>
+    )
+  }
 
   render () { 
     return (
@@ -74,27 +65,12 @@ class App extends Component {
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
             <Header />
+            {this.getVersionText()}
           </ScrollView>
         </SafeAreaView>
         <AppContainer />
       </Fragment>
     );
-
-    /*
-    return (
-      <Fragment>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <Header />
-          </ScrollView>
-        </SafeAreaView>
-        <AppContainer />
-      </Fragment>
-    );
-    */
 
   }
 
@@ -107,6 +83,12 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: Colors.white,
+  },
+  version: {
+    fontSize: 20, 
+    fontWeight: '600', 
+    color: Colors.black, 
+    textAlign: 'auto'
   },
   sectionContainer: {
     marginTop: 32,
