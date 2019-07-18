@@ -81,10 +81,11 @@ exports.cars_put = (req, res, next) => {
 
 exports.cars_delete = async(req, res, next) => {
     try {
-        Repairs.deleteMany( {car_id: req.params.id} );
+        await Repairs.deleteMany( {car_id: req.params.id} );
         await Cars.findByIdAndRemove(req.params.id);
         const results = await Cars.find();
         res.send( {cars: results} );
+        alert("successful");
     } catch(err) {
         throw err;
     }
