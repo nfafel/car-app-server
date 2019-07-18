@@ -2,6 +2,7 @@ const { ApolloServer, gql } = require("apollo-server");
 const fetch = require('node-fetch');
 const Cars = require('./cars.model');
 const Repairs = require('./repairs.model');
+const {GraphQLScalarType} = require('graphql');
 
 //Set up mongoose connection
 const mongoose = require('mongoose');
@@ -31,11 +32,12 @@ const typeDefs = gql`
         year: String!
         rating: Int!
     }
+    scalar Date
     type Repair {
         _id: ID!
         car: Car!
         description: String!
-        date: String!
+        date: Date!
         cost: Int!
         progress: String!
         technician: String!
@@ -71,6 +73,7 @@ const typeDefs = gql`
     type Query {
         cars: [Car!]!
         repairs: [Repair!]!
+        repairsForCar(carId: ID!): [Repair!]!
         allYears: YearsRange!
         allMakes(year: Int!): [Make!]!
         allModels(year: Int!, make: String!): [Model!]!
@@ -83,95 +86,103 @@ const typeDefs = gql`
         createRepair(input: RepairInput): [Repair!]!
         updateRepair(id: ID!, input: RepairInput): [Repair!]!
         removeRepair(id: ID!): [Repair!]!
-
     }
 `;
 
 // Provide resolver functions for your schema fields
 const resolvers = {
-  Query: {
-    async cars(root, args, context) {
-        const result = await Cars.find()
+    Date: new GraphQLScalarType({
+        name: 'Date',
+        serialize(value) {
+            return value.toISOString()
+        }
+    }),
+    Query: {
+        async cars(root, args, context) {
+            const result = await Cars.find()
+            return result;
+        },
+        async repairs(root, args, context) {
+            const result = await Repairs.find()
+            return result;
+        },
+        async repairsForCar(root, {carId}, context) {
+            const results = await Repairs.find({car_id: carId});
+            return results;
+        },
+        async allYears(root, args, context) {
+            const response = await fetch('https://www.carqueryapi.com/api/0.3/?cmd=getYears', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            const result = await response.json();
+            return result.Years;
+        },
+        async allMakes(root, {year}, context) {
+            const response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            const result = await response.json();
+            return result.Makes;
+        },
+        async allModels(root, {year, make}, context) {
+            const response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${make}&year=${year}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            const result = await response.json();
+            return result.Models;
+        }
+    },
+    Repair: {
+        async car({ car_id }) {
+        const result = await Cars.findById(car_id);
         return result;
+        }
     },
-    async repairs(root, args, context) {
-        const result = await Repairs.find()
-        return result;
-    },
-    async allYears(root, args, context) {
-        const response = await fetch('https://www.carqueryapi.com/api/0.3/?cmd=getYears', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-        const result = await response.json();
-        return result.Years;
-    },
-    async allMakes(root, {year}, context) {
-        const response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-        const result = await response.json();
-        return result.Makes;
-    },
-    async allModels(root, {year, make}, context) {
-        const response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${make}&year=${year}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-        const result = await response.json();
-        return result.Models;
-    }
-  },
-  Repair: {
-    async car({ car_id }) {
-      const result = await Cars.findById(car_id);
-      return result;
-    }
-  },
-  Mutation: {
-    async createCar(root, {input}, context) {
-        const newCar = new Cars(input);
-        await newCar.save();
-        const result = await Cars.find();
-        return result;
-    },
-    async updateCar(root, {id, input}, context) {
-        await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
-        const result = await Cars.find();
-        return result;
-    },
-    async removeCar(root, {id}, context) {
-        console.log("hello")
-        await Cars.findByIdAndRemove(id);
-        await Repairs.deleteMany({car_id: id});
-        const result = await Cars.find();
-        return result;
-    },
+    Mutation: {
+        async createCar(root, {input}, context) {
+            const newCar = new Cars(input);
+            await newCar.save();
+            const result = await Cars.find();
+            return result;
+        },
+        async updateCar(root, {id, input}, context) {
+            await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
+            const result = await Cars.find();
+            return result;
+        },
+        async removeCar(root, {id}, context) {
+            await Cars.findByIdAndRemove(id);
+            await Repairs.deleteMany({car_id: id});
+            const result = await Cars.find();
+            return result;
+        },
 
-    async createRepair(root, {input}, context) {
-        const newRepair = new Repairs(input);
-        await newRepair.save();
-        const result = await Repairs.find();
-        return result;
-    },
-    async updateRepair(root, {id, input}, context) {
-        await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
-        const result = await Repairs.find();
-        return result;
-    },
-    async removeRepair(root, {id}, context) {
-        await Repairs.findByIdAndRemove(id);
-        const result = await Repairs.find();
-        return result;
+        async createRepair(root, {input}, context) {
+            const newRepair = new Repairs(input);
+            await newRepair.save();
+            const result = await Repairs.find();
+            return result;
+        },
+        async updateRepair(root, {id, input}, context) {
+            await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
+            const result = await Repairs.find();
+            return result;
+        },
+        async removeRepair(root, {id}, context) {
+            await Repairs.findByIdAndRemove(id);
+            const result = await Repairs.find();
+            return result;
+        }
     }
-  }
 };
 
 const server = new ApolloServer({
