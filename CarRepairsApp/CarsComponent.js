@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
-import { View, Text, Button, ScrollView, TextInput } from 'react-native';
-
+import { View, Text, Button, ScrollView, TouchableOpacity} from 'react-native';
+import Modal from "react-native-modal";
 import { Formik } from 'formik';
 import * as Yup from 'yup'
-//import RepairsByCarComponent from './RepairsByCarComponent'
-
+import RepairsByCarComponent from './RepairsByCarComponent'
 import CarFormComponent from './CarFormComponent'
-
-import { Table, Row, Rows } from 'react-native-table-component';
+import { Table, Row, Col } from 'react-native-table-component';
+import { withNavigation } from "react-navigation";
 
 const queryFunctions = require('./queryFuncForCarsComponent')
 
@@ -25,14 +24,17 @@ class CarsComponent extends Component {
         repairCarModel: null,
         repairCarYear: null,
         carForm: null,
+        modalVisible: false
       }
     }
     
     componentDidMount() {
-        
-        queryFunctions.getCarsData()
-            .then(res => this.setState({ cars: res.cars }))
-            .catch(err => console.log(err));
+        const { navigation } = this.props;
+        this.focusListener = navigation.addListener("didFocus", () => {
+            queryFunctions.getCarsData()
+                .then(res => this.setState({ cars: res.cars }))
+                .catch(err => console.log(err));
+        });
     }
   
     callDeleteData(carId) {
@@ -101,65 +103,94 @@ class CarsComponent extends Component {
                 repairCarId: repairCarId,
                 repairCarMake: repairCarMake,
                 repairCarModel: repairCarModel,
-                repairCarYear: repairCarYear
+                repairCarYear: repairCarYear,
+                modalVisible: true
             }))
             .catch(err => console.log(err));
     }
 
     showRepairsForCar = () => {
         if (this.state.repairsForCar != null) {
-            return (<RepairsByCarComponent repairsForCar={this.state.repairsForCar} repairCarMake={this.state.repairCarMake} repairCarModel={this.state.repairCarModel} repairCarYear={this.state.repairCarYear} rowColStyles={this.rowColStyles} tableStyles={this.tableStyles} />);
+            return (
+                <Modal 
+                    style={{
+                        backgroundColor: 'white',
+                        margin: 15,
+                        flex: 0.7,
+                        }}
+                    isVisible={this.state.modalVisible}
+                >
+                    <View style={{flex: 1}}>
+                        <View style={{flex:0.9, flexDirection: 'column', justifyContent: 'center'}}>
+                            <RepairsByCarComponent repairsForCar={this.state.repairsForCar} repairCarMake={this.state.repairCarMake} repairCarModel={this.state.repairCarModel} repairCarYear={this.state.repairCarYear} rowColStyles={this.rowColStyles} tableStyles={this.tableStyles} />
+                        </View>
+                        <View style={{flex:0.1, justifyContent: 'flex-end'}}>
+                            <TouchableOpacity style={{backgroundColor: '#57b0ff', justifyContent: 'center', flexDirection: 'row'}} onPress={() => this.setState({modalVisible: false})}>
+                                <Text style={{color: 'white', fontSize: 19}}>Hide Repairs</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            );
         } 
     }
 
     getNewCarButton = (resetForm) => {
         if (!(this.state.shouldGetPutData || this.state.shouldGetPostData)) {
-            return (<Button title="NEW CAR" onPress={() => this.getPostData(resetForm)} />)
+            return (
+                <View style={{position: 'absolute', bottom: 5, left:0, right:0, marginHorizontal: 20 }} >
+                    <TouchableOpacity style={{backgroundColor: '#57b0ff', justifyContent: 'center', flexDirection: 'row'}} onPress={() => this.getPostData(resetForm)} >
+                        <Text style={{color: 'white', fontSize: 22}}>NEW CAR</Text>
+                    </TouchableOpacity>
+                </View>
+            )
         }
     }
-  
-    tableStyles = {
-        "width": "90%",
-     
-    };
-
-    rowColStyles = {
-        
-     
-    };
   
     getCarsDisplay = (props) => {
         var carsData = this.state.cars.map((car) => {
             if (this.state.shouldGetPutData && car._id === this.state.carIdUpdate) {
-                return (<CarFormComponent formikProps={props} shouldGetPutData={this.state.shouldGetPutData} cancel={() => {this.setState({shouldGetPutData: false})}} buttonText={"UPDATE"} />);
-                
+                return (<CarFormComponent formikProps={props} shouldGetPutData={this.state.shouldGetPutData} shouldGetPostData={this.state.shouldGetPostData} cancel={() => {this.setState({shouldGetPutData: false})}} buttonText="UPDATE" />);
             } else if (this.state.shouldGetPostData || this.state.shouldGetPutData) {
                 return (
-                    <Row data={[
-                        <Text>{car.year}</Text>, 
-                        <Text>{car.make}</Text>,
-                        <Text>{car.model}</Text>, 
-                        <Text>{car.rating}</Text>
-                    ]} />
+                    <View style={{marginVertical: 10}}>
+                        <Table>
+                            <Row textStyle={{textAlign: 'center'}} data={['Year', car.year]} />
+                            <Row textStyle={{textAlign: 'center'}} data={['Make', car.make]} />
+                            <Row textStyle={{textAlign: 'center'}} data={['Model', car.model]} />
+                            <Row textStyle={{textAlign: 'center'}} data={['Rating', car.rating]} />
+                        </Table>
+                    </View>
                 )
             } else {
-                return ( <Row data={[
-                    <Text>{car.year}</Text>, 
-                    <Text>{car.make}</Text>, 
-                    <Text>{car.model}</Text>, 
-                    <Text>{car.rating}</Text>, 
-                    <View>
-                        <Button title="EDIT" onPress={() => this.getPutData(car, props.setValues)} />
-                        <Button title="SEE REPAIRS" onPress={() => this.setRepairsForCar(car._id, car.make, car.model, car.year)} />
-                        <Button title="DELETE" onPress={() => this.callDeleteData(car._id)} />
+                return ( 
+                    <View style={{marginVertical: 10}}>
+                        <Table>
+                            <Row textStyle={{textAlign: 'center'}} data={['Year', car.year]} />
+                            <Row textStyle={{textAlign: 'center'}} data={['Make', car.make]} />
+                            <Row textStyle={{textAlign: 'center'}} data={['Model', car.model]} />
+                            <Row textStyle={{textAlign: 'center'}} data={['Rating', car.rating]} />
+                            <Row data={[
+                                <TouchableOpacity style={{backgroundColor: '#57b0ff', justifyContent: 'center', flexDirection: 'row'}} onPress={() => this.getPutData(car, props.setValues)} >
+                                    <Text style={{color: 'white', fontSize: 16}}>EDIT</Text>
+                                </TouchableOpacity>,
+                                <TouchableOpacity style={{backgroundColor: '#57b0ff', justifyContent: 'center', flexDirection: 'row'}} onPress={() => this.setRepairsForCar(car._id, car.make, car.model, car.year)} >
+                                    <Text style={{color: 'white', fontSize: 16}}>SEE REPAIRS</Text>
+                                </TouchableOpacity>,
+                                <TouchableOpacity style={{backgroundColor: '#57b0ff', justifyContent: 'center', flexDirection: 'row'}} onPress={() => this.callDeleteData(car._id)} >
+                                    <Text style={{color: 'white', fontSize: 16}}>DELETE</Text>
+                                </TouchableOpacity>
+                                ]}
+                            />
+                        </Table>
                     </View>
-                ]} />)
+                )
             }
         });
         if (this.state.shouldGetPostData) {
-            carsData.push(<CarFormComponent formikProps={props} shouldGetPutData={this.state.shouldGetPutData} cancel={() => {this.setState({shouldGetPostData: false})}} buttonText={"NEW CAR"} />);
+            carsData.push(<CarFormComponent formikProps={props} shouldGetPutData={this.state.shouldGetPutData} shouldGetPostData={this.state.shouldGetPostData} cancel={() => {this.setState({shouldGetPostData: false})}} buttonText="SUBMIT" />);
         }
-        return (carsData);
+        return (carsData.reverse());
     }
   
     handleCorrectSumbit = (values) => {
@@ -198,7 +229,7 @@ class CarsComponent extends Component {
         }
         
         return(
-            <ScrollView>
+            <View>
                 <Formik
                 initialValues = {{make: '', model: '', year: '', rating: ''}}
                 validationSchema={this.CarValidationSchema}
@@ -207,21 +238,23 @@ class CarsComponent extends Component {
                 }}
                 >
                 {props => (
-                <View>
-                    <Table style={this.tableStyles}>
-                        <Row style={this.rowColStyles} data={['Year', 'Make', 'Model', 'Rating', 'Actions']}/> 
-                        {this.getCarsDisplay(props)}
-                    </Table>
-                    {this.getNewCarButton(props.resetForm)}
-                </View>
+                    <View>
+                        <ScrollView 
+                            contentInsetAdjustmentBehavior="automatic"
+                            contentContainerStyle={{flexGrow:1, marginHorizontal: 15}}>
+                            {this.getCarsDisplay(props)}
+                            <View style={{height: 40}}></View>
+                        </ScrollView>
+                        {this.getNewCarButton(props.resetForm)}
+                    </View>
                 )}
                 </Formik>
                 {this.showRepairsForCar()}
-            </ScrollView>
+            </View>
       );
     }
 }
-  
-export default CarsComponent;
+
+export default withNavigation(CarsComponent);
 
 
