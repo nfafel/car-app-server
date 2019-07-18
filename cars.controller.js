@@ -85,7 +85,6 @@ exports.cars_delete = async(req, res, next) => {
         await Cars.findByIdAndRemove(req.params.id);
         const results = await Cars.find();
         res.send( {cars: results} );
-        alert("successful");
     } catch(err) {
         throw err;
     }
