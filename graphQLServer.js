@@ -4,6 +4,7 @@ const Cars = require('./cars.model');
 const Repairs = require('./repairs.model');
 const {GraphQLScalarType} = require('graphql');
 
+/*
 //Set up mongoose connection
 const mongoose = require('mongoose');
 
@@ -21,10 +22,10 @@ mongoose.connect(MONGODB, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 const myReactAppDb = mongoose.connection;
 myReactAppDb.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
+*/
 
 // Construct a schema, using GraphQL schema language
-const typeDefs = gql`
+exports.typeDefs = gql`
     type Car {
         _id: ID!
         make: String!
@@ -90,7 +91,7 @@ const typeDefs = gql`
 `;
 
 // Provide resolver functions for your schema fields
-const resolvers = {
+exports.resolvers = {
     Date: new GraphQLScalarType({
         name: 'Date',
         serialize(value) {
@@ -185,6 +186,7 @@ const resolvers = {
     }
 };
 
+/*
 const server = new ApolloServer({
   typeDefs,
   resolvers
@@ -193,3 +195,4 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`);
 });
+*/

@@ -1,7 +1,9 @@
 const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
+const { typeDefs, resolvers } = require('./graphQLServer');
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const proxy = require('http-proxy-middleware');
 
 const cars = require('./cars.route'); // Imports routes for the cars
 const repairs = require('./repairs.route'); // Imports routes for the repairs
@@ -15,6 +17,8 @@ if (process.env.NODE_ENV == 'test') {
     process.env['MONGODBTEST'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppTestDb?retryWrites=true&w=majority";
     MONGODB = process.env.MONGODBTEST || "mongodb://localhost:27017";
 } else {
+    process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppDb?retryWrites=true&w=majority";
+
     MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 }
 
@@ -29,14 +33,16 @@ app.use(cors());
 app.use('/cars', cars);
 app.use('/repairs', repairs);
 
-//app.use('/api', proxy({ 
-//    target: 'https://www.carqueryapi.com',
-//    changeOrigin: true
-//})); //Funnel car year, make, and model requests to https://www.carqueryapi.com
-
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
 });
+
+const server = new ApolloServer({
+    typeDefs,
+    resolvers
+})
+
+server.applyMiddleware({app});
 
 const PORT = process.env.PORT || 5000;
 
