@@ -25,14 +25,14 @@ myReactAppDb.on('error', console.error.bind(console, 'MongoDB connection error:'
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
     type Car {
-        id: ID!
+        _id: ID!
         make: String!
         model: String!
         year: String!
         rating: Int!
     }
     type Repair {
-        id: ID!
+        _id: ID!
         car: Car!
         description: String!
         date: String!
@@ -148,8 +148,9 @@ const resolvers = {
         return result;
     },
     async removeCar(root, {id}, context) {
+        console.log("hello")
         await Cars.findByIdAndRemove(id);
-        await Repairs.deleteMany({car_id: req.params.id});
+        await Repairs.deleteMany({car_id: id});
         const result = await Cars.find();
         return result;
     },
@@ -181,117 +182,3 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`);
 });
-
-
-
-/*
-const { ApolloServer, gql } = require("apollo-server");
-
-const authors = [
-  { id: 1, firstName: "Tom", lastName: "Coleman" },
-  { id: 2, firstName: "Sashko", lastName: "Stubailo" },
-  { id: 3, firstName: "Mikhail", lastName: "Novikov" }
-];
-const posts = [
-  {
-    id: 1,
-    authorId: 1,
-    createdAt: "2018-12-06T08:22:00.000Z",
-    title: "Introduction to GraphQL"
-  },
-  {
-    id: 2,
-    authorId: 2,
-    createdAt: "2018-12-10T08:22:00.000Z",
-    title: "GraphQL Rocks"
-  },
-  {
-    id: 3,
-    authorId: 2,
-    createdAt: "2018-12-14T08:22:00.000Z",
-    title: "Advanced GraphQL"
-  },
-  {
-    id: 4,
-    authorId: 3,
-    createdAt: "2018-12-15T08:22:00.000Z",
-    title: "CodeSandbox is Cool"
-  }
-];
-
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-    type Author {
-        id: Int!
-        firstName: String!
-        lastName: String
-        posts: [Post!]!
-    }
-    type Post {
-        id: Int!
-        title: String!
-        createdAt: String!
-        author: Author!
-    }
-    input PostInput {
-        title: String!
-        createdAt: String!
-        author: AuthorInput
-    }
-    input AuthorInput {
-        firstName: String!
-        lastName: String
-    }
-    type Query {
-        posts(count: Int): [Post!]!
-        author(id: Int!): Author
-    }
-    type Mutation {
-        createPost(input: PostInput): [Post!]!
-        updatePost(id: ID!, input: PostInput): [Post!]!
-        removePost(id: ID!): [Post!]!
-
-        createAuthor(input: AuthorInput): Author
-        updateAuthor(id: ID!, input: AuthorInput): Author
-        removeAuthor(id: ID!): Author
-    }
-`;
-
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    posts(root, { count = 10 }, context) {
-      return posts.slice(0, count);
-    },
-    author(root, { id }) {
-      return authors.find(a => a.id === id);
-    }
-  },
-  Mutation: {
-    createPost(root, {input}, context) {
-        posts.push(input); 
-        return posts;
-    }
-  },
-  Post: {
-    author({ authorId }) {
-      return authors.find(a => a.id === authorId);
-    }
-  },
-  Author: {
-    posts({ id }) {
-      return posts.filter(p => p.authorId === id);
-    }
-  }
-
-};
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
-
-server.listen().then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
-});
-*/

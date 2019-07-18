@@ -79,38 +79,15 @@ exports.cars_put = (req, res, next) => {
     });
 }
 
-exports.cars_delete = (req, res, next) => {
-    
-    Cars.findByIdAndRemove(req.params.id, (err, results) => {
-        if(err) {
-            throw err;
-        }
-
-        Cars.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({cars: results} );
-            }
-        });
-    });
-}
-
-exports.cars_deleteRepairs = (req, res, next) => {
-    
-    Repairs.deleteMany( {car_id: req.params.id}, (err, results) => {
-        if (err) {
-            throw err;
-        }
-
-        Cars.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({cars: results} );
-            }
-        });
-    });
+exports.cars_delete = async(req, res, next) => {
+    try {
+        Repairs.deleteMany( {car_id: req.params.id} );
+        await Cars.findByIdAndRemove(req.params.id);
+        const results = await Cars.find();
+        res.send( {cars: results} );
+    } catch(err) {
+        throw err;
+    }
 }
 
 exports.cars_getYears = async(req, res, next) => {
