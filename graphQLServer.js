@@ -72,7 +72,8 @@ exports.typeDefs = gql`
         technician: String!
     }
     type Query {
-        cars(id: ID): [Car!]!
+        car(id: ID): Car!
+        cars: [Car!]
         repairs: [Repair!]!
         repairsForCar(carId: ID!): [Repair!]!
         allYears: YearsRange!
@@ -99,13 +100,12 @@ exports.resolvers = {
         }
     }),
     Query: {
-        async cars(root, {id}, context) {
-            var result;
-            if (id == null) {
-                result = await Cars.find()
-            } else {
-                result = await Cars.findById(id)
-            }
+        async car(root, {id}, context) {
+            const result = await Cars.findById(id)
+            return result;
+        },
+        async cars(root, args, context) {
+            const result = await Cars.find()
             return result;
         },
         async repairs(root, args, context) {
