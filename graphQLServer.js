@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const Cars = require('./cars.model');
 const Repairs = require('./repairs.model');
 const {GraphQLScalarType} = require('graphql');
-
+ 
 exports.typeDefs = gql`
     type Car {
         _id: ID!
