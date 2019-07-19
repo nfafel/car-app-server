@@ -4,27 +4,6 @@ const Cars = require('./cars.model');
 const Repairs = require('./repairs.model');
 const {GraphQLScalarType} = require('graphql');
 
-/*
-//Set up mongoose connection
-const mongoose = require('mongoose');
-
-var MONGODB;
-if (process.env.NODE_ENV == 'test') {
-    process.env['MONGODBTEST'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppTestDb?retryWrites=true&w=majority";
-    MONGODB = process.env.MONGODBTEST || "mongodb://localhost:27017";
-} else {
-    //DELETE LINE BELOW
-    process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppDb?retryWrites=true&w=majority";
-    MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
-}
-
-mongoose.connect(MONGODB, {useNewUrlParser: true});
-mongoose.Promise = global.Promise;
-const myReactAppDb = mongoose.connection;
-myReactAppDb.on('error', console.error.bind(console, 'MongoDB connection error:'));
-*/
-
-// Construct a schema, using GraphQL schema language
 exports.typeDefs = gql`
     type Car {
         _id: ID!
@@ -185,14 +164,3 @@ exports.resolvers = {
         }
     }
 };
-
-/*
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
-
-server.listen().then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
-});
-*/
