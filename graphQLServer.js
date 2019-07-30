@@ -1,8 +1,10 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, PubSub } = require("apollo-server");
 const fetch = require('node-fetch');
 const Cars = require('./cars.model');
 const Repairs = require('./repairs.model');
 const {GraphQLScalarType} = require('graphql');
+
+const pubsub = new PubSub();
  
 exports.typeDefs = gql`
     type Car {
@@ -51,7 +53,7 @@ exports.typeDefs = gql`
         technician: String!
     }
     type Query {
-        cars: [Car!]
+        cars: [Car!]!
         repairs: [Repair!]!
         repairsForCar(carId: ID!): [Repair!]!
         allYears: YearsRange!
@@ -66,6 +68,10 @@ exports.typeDefs = gql`
         createRepair(input: RepairInput): [Repair!]!
         updateRepair(id: ID!, input: RepairInput): [Repair!]!
         removeRepair(id: ID!): [Repair!]!
+    }
+    type Subscription {
+        carChanged: [Car!]!
+        repairChanged: [Repair!]!
     }
 `;
 
@@ -132,17 +138,20 @@ exports.resolvers = {
             const newCar = new Cars(input);
             await newCar.save();
             const result = await Cars.find();
+            pubsub.publish("CAR_CHANGED", { carChanged: result })
             return result;
         },
         async updateCar(root, {id, input}, context) {
             await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
             const result = await Cars.find();
+            pubsub.publish("CAR_CHANGED", { carChanged: result })
             return result;
         },
         async removeCar(root, {id}, context) {
             await Cars.findByIdAndRemove(id);
             await Repairs.deleteMany({car_id: id});
             const result = await Cars.find();
+            pubsub.publish("CAR_CHANGED", { carChanged: result })
             return result;
         },
 
@@ -150,17 +159,28 @@ exports.resolvers = {
             const newRepair = new Repairs(input);
             await newRepair.save();
             const result = await Repairs.find();
+            pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return result;
         },
         async updateRepair(root, {id, input}, context) {
             await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
             const result = await Repairs.find();
+            pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return result;
         },
         async removeRepair(root, {id}, context) {
             await Repairs.findByIdAndRemove(id);
             const result = await Repairs.find();
+            pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return result;
+        }
+    },
+    Subscription: {
+        carChanged: {
+            subscribe: () => pubsub.asyncIterator("CAR_CHANGED")
+        },
+        repairChanged: {
+            subscribe: () => pubsub.asyncIterator("REPAIR_CHANGED")
         }
     }
 };

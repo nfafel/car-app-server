@@ -5,6 +5,8 @@ const { typeDefs, resolvers } = require('./graphQLServer');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const http = require('http');
+
 const cars = require('./cars.route'); // Imports routes for the cars
 const repairs = require('./repairs.route'); // Imports routes for the repairs
 const app = express();
@@ -44,11 +46,13 @@ const server = new ApolloServer({
 
 server.applyMiddleware({app});
 
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
+
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });  
 
-module.exports = app;
-
+module.exports = httpServer;
