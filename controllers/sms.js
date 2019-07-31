@@ -32,7 +32,7 @@ exports.sendResponse = async(req, res) => {
         twiml.message(`${req.body.Body}`);
     
         res.writeHead(200, {'Content-Type': 'text/xml'});
-        res.send(twiml.toString());
+        res.end(twiml.toString());
     } catch(err) {
         console.log(err)
     }
