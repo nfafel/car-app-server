@@ -25,13 +25,17 @@ exports.sendMessage = async(req, res) => {
 }
 
 exports.sendResponse = async(req, res) => {
-    const twiml = new MessagingResponse();
+    try {
+        const twiml = new MessagingResponse();
 
-    console.log(req.body.Body)
-    twiml.message(`${req.body.Body}`);
-
-    res.writeHead(200, {'Content-Type': 'text/xml'});
-    res.send(twiml.toString());
+        console.log(req.body.Body)
+        twiml.message(`${req.body.Body}`);
+    
+        res.writeHead(200, {'Content-Type': 'text/xml'});
+        res.send(twiml.toString());
+    } catch(err) {
+        console.log(err)
+    }
 
     // try {
     //     const message = await client.messages.create({
