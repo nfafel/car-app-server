@@ -145,6 +145,8 @@ exports.resolvers = {
             await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true })
             const result = await Cars.find();
             pubsub.publish("CAR_CHANGED", { carChanged: result })
+            const newRepairs = await Repairs.find();
+            pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
             return result;
         },
         async removeCar(root, {id}, context) {
