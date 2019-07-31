@@ -150,6 +150,8 @@ exports.resolvers = {
         async removeCar(root, {id}, context) {
             await Cars.findByIdAndRemove(id);
             await Repairs.deleteMany({car_id: id});
+            const newRepairs = await Repairs.find();
+            pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
             const result = await Cars.find();
             pubsub.publish("CAR_CHANGED", { carChanged: result })
             return result;
