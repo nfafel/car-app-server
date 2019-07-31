@@ -2,7 +2,6 @@ const Cars = require('../models/cars');
 const Repairs = require('../models/repairs');
 const fetch = require('node-fetch');
 
-
 exports.get = async(req, res) => {
     try {
         const result = await Cars.find({});
