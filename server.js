@@ -7,8 +7,8 @@ const cors = require('cors');
 
 const http = require('http');
 
-const cars = require('./cars.route'); // Imports routes for the cars
-const repairs = require('./repairs.route'); // Imports routes for the repairs
+const cars = require('./routes/cars'); // Imports routes for the cars
+const repairs = require('./routes/repairs'); // Imports routes for the repairs
 const app = express();
 
 //Set up mongoose connection
@@ -20,7 +20,6 @@ if (process.env.NODE_ENV == 'test') {
     MONGODB = process.env.MONGODBTEST || "mongodb://localhost:27017";
 } else {
     process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppDb?retryWrites=true&w=majority";
-
     MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 }
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const repairsRouter = express.Router();
 
-const repairs_controller = require('./repairs.controller');
+const repairs_controller = require('../controllers/repairs');
 
 repairsRouter.get('/', repairs_controller.repairs_get);
 

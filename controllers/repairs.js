@@ -1,4 +1,4 @@
-const Repairs = require('./repairs.model');
+const Repairs = require('../models/repairs');
 
 exports.repairs_get = (req, res, next) => {
     Repairs.find({}, (err, results) => {

@@ -1,7 +1,7 @@
 const express = require('express');
 const carsRouter = express.Router();
 
-const cars_controller = require('./cars.controller');
+const cars_controller = require('../controllers/cars');
 
 carsRouter.get('/years', cars_controller.cars_getYears);
 
