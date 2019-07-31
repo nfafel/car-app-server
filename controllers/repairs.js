@@ -1,26 +1,26 @@
 const Repairs = require('../models/repairs');
 
-exports.repairs_get = (req, res, next) => {
-    Repairs.find({}, (err, results) => {
-        if(err){
-            console.log(err);
-        } else{
-            res.send({repairs: results} );
-        }
-    });
+exports.get = async(req, res) => {
+    try {
+        const result = await Repairs.find({});
+        res.send({repairs: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error getting repairs data"})
+    }
 }
 
-exports.repairs_getByCarId = (req, res, next) => {
-    Repairs.find({car_id: req.params.id}, (err, results) => {
-        if(err) {
-            console.log(err);
-        } else {
-            res.send({repairsForCar: results} );
-        }
-    });
+exports.getByCarId = async(req, res) => {
+    try {
+        const result = await Repairs.find({car_id: req.params.id});
+        res.send({repairsForCar: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error getting repairs for car data"})
+    }
 }
 
-exports.repairs_post = (req, res, next) => {
+exports.post = async(req, res) => {
     var newRepair;
     if (Object.values(req.query).length >= 1) {
         newRepair = new Repairs({
@@ -41,23 +41,18 @@ exports.repairs_post = (req, res, next) => {
             technician: req.body.technician
         })
     }
-    
-    newRepair.save( (err, result) => {
-        if(err) {
-            res.send(err);
-        } else {
-            Repairs.find({}, (err, results) => {
-                if(err){
-                    console.log(err);
-                } else{
-                    res.send({repairs: results} );
-                }
-            });
-        }
-    });
+
+    try {
+        await newRepair.save();
+        const result = await Repairs.find({});
+        res.send({repairs: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error posting new repair data"})
+    }
 }
 
-exports.repairs_put = (req, res, next) => {
+exports.put = async(req, res) => {
     var repairUpdates;
     if (Object.values(req.query).length >= 1) {
         repairUpdates = req.query;
@@ -65,34 +60,23 @@ exports.repairs_put = (req, res, next) => {
         repairUpdates = req.body;
     }
 
-    Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true }, (err, results) => {
-        if(err) {
-            res.send(err);
-        } else {
-            Repairs.find({}, (err, results) => {
-                if(err){
-                    console.log(err);
-                } else{
-                    res.send({repairs: results} );
-                }
-            });
-        }
-    });
+    try {
+        await Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true });
+        const result = await Repairs.find({});
+        res.send({repairs: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error updating repair data"})
+    }
 }
 
-exports.repairs_delete = (req, res, next) => {
-    
-    Repairs.findByIdAndRemove(req.params.id, (err, results) => {
-        if(err) {
-            throw err;
-        }
-
-        Repairs.find({}, (err, results) => {
-            if(err){
-                console.log(err);
-            } else{
-                res.send({repairs: results} );
-            }
-        });
-    });
+exports.delete = async(req, res) => {
+    try {
+        await Repairs.findByIdAndRemove(req.params.id);
+        const result = await Repairs.find({});
+        res.send({repairs: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error updating repair data"})
+    }
 }

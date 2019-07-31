@@ -3,27 +3,27 @@ const Repairs = require('../models/repairs');
 const fetch = require('node-fetch');
 
 
-exports.cars_get = (req, res, next) => {
-    Cars.find({}, (err, results) => {
-        if(err){
-            console.log(err);
-        } else{
-            res.send({cars: results} );
-        }
-    });
+exports.get = async(req, res) => {
+    try {
+        const result = await Cars.find({});
+        res.send({cars: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error getting cars data"})
+    }
 }
 
-exports.cars_getById = (req, res, next) => {
-    Cars.findById(req.params.id, (err, result) => {
-        if(err){
-            console.log(err);
-        } else{
-            res.send({car: result} );
-        }
-    });
+exports.getById = async(req, res) => {
+    try {
+        const result = await Cars.findById(req.params.id);
+        res.send({car: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error getting car data by ID"})
+    }
 }
 
-exports.cars_post = (req, res, next) => {
+exports.post = async(req, res) => {
     var newCar;
     if (Object.values(req.query).length >= 1) {
         newCar = new Cars({
@@ -40,23 +40,18 @@ exports.cars_post = (req, res, next) => {
             rating: req.body.rating
         })
     }
-    
-    newCar.save( (err, result) => {
-        if(err) {
-            res.send(err);
-        } else {
-            Cars.find({}, (err, results) => {
-                if(err){
-                    console.log(err);
-                } else{
-                    res.send({cars: results} );
-                }
-            });
-        }
-    });
+
+    try {
+        await newCar.save();
+        const result = await Cars.find({});
+        res.send({cars: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error posting car data"})
+    }
 }
 
-exports.cars_put = (req, res, next) => {
+exports.put = async(req, res) => {
     var carUpdates;
     if (Object.values(req.query).length >= 1) {
         carUpdates = req.query;
@@ -64,22 +59,17 @@ exports.cars_put = (req, res, next) => {
         carUpdates = req.body;
     }
 
-    Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true }, (err, results) => {
-        if(err) {
-            res.send(err);
-        } else {
-            Cars.find({}, (err, results) => {
-                if(err){
-                    console.log(err);
-                } else{
-                    res.send({cars: results} );
-                }
-            });
-        }
-    });
+    try {
+        await Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true });
+        const result = await Cars.find({});
+        res.send({cars: result})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error updating car data"})
+    }
 }
 
-exports.cars_delete = async(req, res, next) => {
+exports.delete = async(req, res, next) => {
     try {
         await Repairs.deleteMany( {car_id: req.params.id} );
         await Cars.findByIdAndRemove(req.params.id);
@@ -90,7 +80,7 @@ exports.cars_delete = async(req, res, next) => {
     }
 }
 
-exports.cars_getYears = async(req, res, next) => {
+exports.getYears = async(req, res, next) => {
     var response = await fetch('https://www.carqueryapi.com/api/0.3/?cmd=getYears', {
         headers: {
         'Accept': 'application/json',
@@ -101,7 +91,7 @@ exports.cars_getYears = async(req, res, next) => {
     res.send(body);
 }
 
-exports.cars_getMakes = async(req, res, next) => {
+exports.getMakes = async(req, res, next) => {
     var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${req.params.year}`, {
         headers: {
         'Accept': 'application/json',
@@ -112,7 +102,7 @@ exports.cars_getMakes = async(req, res, next) => {
     res.send(body);
 }
 
-exports.cars_getModels = async(req, res, next) => {
+exports.getModels = async(req, res, next) => {
     var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${req.params.make}&year=${req.params.year}`, {
         headers: {
         'Accept': 'application/json',

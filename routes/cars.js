@@ -3,20 +3,20 @@ const carsRouter = express.Router();
 
 const cars_controller = require('../controllers/cars');
 
-carsRouter.get('/years', cars_controller.cars_getYears);
+carsRouter.get('/years', cars_controller.getYears);
 
-carsRouter.get('/', cars_controller.cars_get);
+carsRouter.get('/', cars_controller.get);
 
-carsRouter.get('/:id', cars_controller.cars_getById);
+carsRouter.get('/:id', cars_controller.getById);
 
-carsRouter.get('/makes/:year', cars_controller.cars_getMakes);
+carsRouter.get('/makes/:year', cars_controller.getMakes);
 
-carsRouter.get('/models/:year/:make', cars_controller.cars_getModels);
+carsRouter.get('/models/:year/:make', cars_controller.getModels);
 
-carsRouter.post('/', cars_controller.cars_post);
+carsRouter.post('/', cars_controller.post);
 
-carsRouter.put('/:id', cars_controller.cars_put);
+carsRouter.put('/:id', cars_controller.put);
 
-carsRouter.delete('/:id', cars_controller.cars_delete);
+carsRouter.delete('/:id', cars_controller.delete);
 
 module.exports = carsRouter; 

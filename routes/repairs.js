@@ -3,14 +3,14 @@ const repairsRouter = express.Router();
 
 const repairs_controller = require('../controllers/repairs');
 
-repairsRouter.get('/', repairs_controller.repairs_get);
+repairsRouter.get('/', repairs_controller.get);
 
-repairsRouter.get('/:id/repairsForCar', repairs_controller.repairs_getByCarId)
+repairsRouter.get('/:id/repairsForCar', repairs_controller.getByCarId)
 
-repairsRouter.post('/', repairs_controller.repairs_post);
+repairsRouter.post('/', repairs_controller.post);
 
-repairsRouter.put('/:id', repairs_controller.repairs_put);
+repairsRouter.put('/:id', repairs_controller.put);
 
-repairsRouter.delete('/:id', repairs_controller.repairs_delete);
+repairsRouter.delete('/:id', repairs_controller.delete);
 
 module.exports = repairsRouter;
