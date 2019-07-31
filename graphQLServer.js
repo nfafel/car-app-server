@@ -1,7 +1,7 @@
 const { ApolloServer, gql, PubSub } = require("apollo-server");
 const fetch = require('node-fetch');
-const Cars = require('./cars.model');
-const Repairs = require('./repairs.model');
+const Cars = require('./models/cars');
+const Repairs = require('./models/repairs');
 const {GraphQLScalarType} = require('graphql');
 
 const pubsub = new PubSub();

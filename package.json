@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Node.js on Docker",
   "author": "Nicholas Fafel <nicholas.fafel@gmail.com>",
-  "main": "nodeVersion.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node nodeVersion.js",
+    "start": "node server.js",
     "test": "mocha serverTests.js --timeout 10000"
   },
   "dependencies": {
