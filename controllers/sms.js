@@ -18,12 +18,29 @@ exports.sendMessage = async(req, res) => {
             to: `+${req.params.number}`
         });
         res.send(message.sid);
-
-        const twiml = new MessagingResponse();
-        twiml.message('response test');
-
     } catch(err) {
         console.log(err);
         res.status(400).send({message: "Error sending sms"})
     }
+}
+
+exports.sendReponse = async(req, res) => {
+    const twiml = new MessagingResponse();
+
+    twiml.message('The Robots are coming! Head for the hills!');
+
+    res.writeHead(200, {'Content-Type': 'text/xml'});
+    res.end(twiml.toString());
+
+    // try {
+    //     const message = await client.messages.create({
+    //         body: text,
+    //         from: '+17176960866',
+    //         to: `+${req.params.number}`
+    //     });
+    //     res.send(message.sid);
+    // } catch(err) {
+    //     console.log(err);
+    //     res.status(400).send({message: "Error sending sms"})
+    // }
 }
