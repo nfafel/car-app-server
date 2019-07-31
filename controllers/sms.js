@@ -24,7 +24,7 @@ exports.sendMessage = async(req, res) => {
     }
 }
 
-exports.sendReponse = async(req, res) => {
+exports.sendResponse = async(req, res) => {
     const twiml = new MessagingResponse();
 
     twiml.message('The Robots are coming! Head for the hills!');
