@@ -27,10 +27,9 @@ exports.sendMessage = async(req, res) => {
 exports.sendResponse = async(req, res) => {
     const twiml = new MessagingResponse();
 
-    twiml.message('The Robots are coming! Head for the hills!');
+    console.log(req.body.Body);
+    twiml.message(req.body.Body);
 
-    res.writeHead(200, {'Content-Type': 'text/xml'});
-    res.end(twiml.toString());
 
     // try {
     //     const message = await client.messages.create({
