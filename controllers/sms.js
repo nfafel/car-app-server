@@ -1,3 +1,5 @@
+const PhoneNumber = require('../models/sms');
+
 const accountSid = 'ACe5c33365d919ba51826cbbebe1ae8801';
 const authToken = '8f66906e91278f5779413afc931ce205';
 const client = require('twilio')(accountSid, authToken);
@@ -22,6 +24,15 @@ exports.sendConfirmation = async(req, res) => {
         console.log(err);
         res.status(400).send({message: "Error sending sms"})
     }
+}
+
+exports.subscribeNumber = async(req, res) => {
+    var newPhoneNumber = new PhoneNumber({
+        phoneNumber: req.params.number
+    })
+    await newPhoneNumber.save()
+    const result = await PhoneNumber.find();
+    res.send({numbers: result})
 }
 
 exports.sendResponse = async(req, res) => {
