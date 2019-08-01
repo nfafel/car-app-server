@@ -49,9 +49,8 @@ exports.subscribeNumber = async(req, res) => {
 exports.sendResponse = async(req, res) => {
     try {
         const twiml = new MessagingResponse();
-        console.log(req.body.To)
         if (req.body.Body === "NOMOREMESSAGES") {
-            PhoneNumber.remove({phoneNumber: req.body.To})
+            PhoneNumber.remove({phoneNumber: req.body.From})
             twiml.message("You are now unsubscribed from receiving text notifications.");
         } else {
             twiml.message("If you have questions or concerns, please contact (717)-555-5555");
