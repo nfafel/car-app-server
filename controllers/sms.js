@@ -3,17 +3,17 @@ const authToken = '8f66906e91278f5779413afc931ce205';
 const client = require('twilio')(accountSid, authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
-exports.sendMessage = async(req, res) => {
-    var text;
+exports.sendConfirmation = async(req, res) => {
+    var confirmationNumber;
     if (Object.values(req.query).length >= 1) {
-        text = req.query.text;
+        confirmationNumber = req.query.confirmationNumber;
     } else {
-        text = req.body.text;
+        confirmationNumber = req.body.confirmationNumber;
     }
 
     try {
         const message = await client.messages.create({
-            body: text,
+            body: `Confirmation Number: ${confirmationNumber}`,
             from: '+17176960866',
             to: `+${req.params.number}`
         });
@@ -36,16 +36,4 @@ exports.sendResponse = async(req, res) => {
     } catch(err) {
         console.log(err)
     }
-
-    // try {
-    //     const message = await client.messages.create({
-    //         body: text,
-    //         from: '+17176960866',
-    //         to: `+${req.params.number}`
-    //     });
-    //     res.send(message.sid);
-    // } catch(err) {
-    //     console.log(err);
-    //     res.status(400).send({message: "Error sending sms"})
-    // }
 }

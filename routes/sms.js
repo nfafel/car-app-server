@@ -5,6 +5,6 @@ const sms_controller = require('../controllers/sms');
 
 smsRouter.post('/reply', sms_controller.sendResponse)
 
-smsRouter.post('/send/:number', sms_controller.sendMessage)
+smsRouter.post('/sendConfirmation/:number', sms_controller.sendConfirmation)
 
 module.exports = smsRouter;
