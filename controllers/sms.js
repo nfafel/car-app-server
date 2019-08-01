@@ -47,6 +47,8 @@ exports.subscribeNumber = async(req, res) => {
 }
 
 exports.sendResponse = async(req, res) => {
+    console.log(typeof(req.body.From))
+    console.log(req.body.From.slice(1))
     try {
         const twiml = new MessagingResponse();
         if (req.body.Body === "NOMOREMESSAGES") {
