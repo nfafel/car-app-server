@@ -36,7 +36,7 @@ exports.subscribeNumber = async(req, res) => {
         res.send({numbers: result})
 
         client.messages.create({
-            body: `You are now subscribed to recieve text notifactions! To unsubscribe at any time, reply 'UNSUBSCRIBE'.`,
+            body: `You are now subscribed to recieve text notifactions! To unsubscribe at any time, reply 'NOMOREMESSAGES'.`,
             from: '+17176960866',
             to: `+${req.params.number}`
         });
@@ -50,7 +50,7 @@ exports.sendResponse = async(req, res) => {
     try {
         const twiml = new MessagingResponse();
 
-        if (req.body.Body === "UNSUBSCRIBE") {
+        if (req.body.Body === "NOMOREMESSAGES") {
             PhoneNumber.remove({phoneNumber: req.params.id})
             twiml.message("You are now unsubscribed from receiving text notifications.");
         } else {
