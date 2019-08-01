@@ -30,18 +30,32 @@ exports.subscribeNumber = async(req, res) => {
     var newPhoneNumber = new PhoneNumber({
         phoneNumber: req.params.number
     })
-    await newPhoneNumber.save()
-    const result = await PhoneNumber.find();
-    res.send({numbers: result})
+    try {
+        await newPhoneNumber.save()
+        const result = await PhoneNumber.find();
+        res.send({numbers: result})
+
+        client.messages.create({
+            body: `You are now subscribed to recieve text notifactions! To unsubscribe at any time, reply 'UNSUBSCRIBE'.`,
+            from: '+17176960866',
+            to: `+${req.params.number}`
+        });
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: 'Error subscribing phone number'})
+    }
 }
 
 exports.sendResponse = async(req, res) => {
     try {
         const twiml = new MessagingResponse();
 
-        console.log(req.body.Body)
-        twiml.message(`${req.body.Body}`);
-    
+        if (req.body.Body === "UNSUBSCRIBE") {
+            PhoneNumber.remove({phoneNumber: req.params.id})
+            twiml.message("You are now unsubscribed from receiving text notifications.");
+        } else {
+            twiml.message("If you have questions or concerns, please contact (717)-555-5555");
+        }
         res.writeHead(200, {'Content-Type': 'text/xml'});
         res.end(twiml.toString());
     } catch(err) {
