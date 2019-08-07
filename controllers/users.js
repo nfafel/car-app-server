@@ -22,17 +22,36 @@ exports.getUser = async(req, res) => {
     }
 }
 
+exports.changeSubscription = async(req, res) => {
+    var updatedSubscription;
+    if (Object.values(req.query).length >= 1) {
+        updatedSubscription = req.query.subscribed;
+    } else {
+        updatedSubscription = req.body.subscribed;
+    }
+
+    try {
+        const updatedUser = await Users.findOneAndUpdate({phoneNumber: req.params.number}, {subscribed: updatedSubscription}, { new: true });
+        res.send({user: updatedUser})
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error updating subscription data"})
+    }
+}
+
 exports.post = async(req, res) => {
     var newUser;
     if (Object.values(req.query).length >= 1) {
         newUser = new Users({
             phoneNumber: req.query.phoneNumber,
-            password: req.query.password
+            password: req.query.password,
+            subscribed: req.query.subscribed
         });
     } else {
         newUser = new Users({
             phoneNumber: req.body.phoneNumber,
-            password: req.body.password
+            password: req.body.password,
+            subscribed: req.body.subscribed
         });
     }
 
