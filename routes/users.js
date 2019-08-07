@@ -5,7 +5,7 @@ const users_controller = require('../controllers/users');
 
 usersRouter.get('/', users_controller.get);
 
-usersRouter.get('/:number/password', users_controller.getPassword);
+usersRouter.get('/:number', users_controller.getUser);
 
 usersRouter.post('/', users_controller.post);
 

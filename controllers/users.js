@@ -12,10 +12,10 @@ exports.get = async(req, res) => {
     }
 }
 
-exports.getPassword = async(req, res) => {
+exports.getUser = async(req, res) => {
     try {
         const user = await Users.findOne({phoneNumber: req.params.number});
-        res.send({password: user.password})
+        res.send({user: user})
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error getting users"})
