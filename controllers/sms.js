@@ -1,19 +1,7 @@
-const PhoneNumber = require('../models/sms');
-
 const accountSid = 'ACe5c33365d919ba51826cbbebe1ae8801';
 const authToken = '8f66906e91278f5779413afc931ce205';
 const client = require('twilio')(accountSid, authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-
-exports.get = async(req, res) => {
-    try {
-        const result = await PhoneNumber.find();
-        res.send({numbers: result})
-    } catch(err) {
-        console.log(err)
-        res.status(400).send({message: 'Error getting all phone numbers.'})
-    }
-}
 
 exports.sendConfirmation = async(req, res) => {
     var confirmationNumber;
@@ -36,31 +24,11 @@ exports.sendConfirmation = async(req, res) => {
     }
 }
 
-exports.subscribeNumber = async(req, res) => {
-    var newPhoneNumber = new PhoneNumber({
-        phoneNumber: req.params.number
-    })
-    try {
-        await newPhoneNumber.save()
-        const result = await PhoneNumber.find();
-        res.send({numbers: result})
-
-        client.messages.create({
-            body: `You are now subscribed to recieve text notifactions! To unsubscribe at any time, reply 'NOMOREMESSAGES'.`,
-            from: '+17176960866',
-            to: `+${req.params.number}`
-        });
-    } catch(err) {
-        console.log(err)
-        res.status(400).send({message: 'Error subscribing phone number'})
-    }
-}
-
 exports.sendResponse = async(req, res) => {
     try {
         const twiml = new MessagingResponse();
         if (req.body.Body === "NOMOREMESSAGES") {
-            await PhoneNumber.deleteMany({ phoneNumber : parseInt(req.body.From.slice(1)) });
+            //await PhoneNumber.deleteMany({ phoneNumber : parseInt(req.body.From.slice(1)) });
             twiml.message("You are now unsubscribed from receiving text notifications.");
         } else {
             twiml.message("If you have questions or concerns, please contact (717)-555-5555");
