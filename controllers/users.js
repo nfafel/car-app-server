@@ -29,6 +29,7 @@ exports.changeSubscription = async(req, res) => {
     } else {
         updatedSubscription = req.body.subscribed;
     }
+    alert(updatedSubscription)
 
     try {
         const updatedUser = await Users.findOneAndUpdate({phoneNumber: req.params.number}, {subscribed: updatedSubscription}, { new: true });
