@@ -22,6 +22,20 @@ exports.getUser = async(req, res) => {
     }
 }
 
+exports.checkAvailability = async(req, res) => {
+    try {
+        const user = await Users.findOne({phoneNumber: req.params.number});
+        if (user === null) {
+            res.send({available: true})
+        } else {
+            res.send({available: false})
+        }
+    } catch(err) {
+        console.log(err)
+        res.status(400).send({message: "Error getting users"})
+    }
+}
+
 exports.changeSubscription = async(req, res) => {
     var updatedSubscription;
     if (Object.values(req.query).length >= 1) {

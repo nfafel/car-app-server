@@ -7,6 +7,8 @@ usersRouter.get('/', users_controller.get);
 
 usersRouter.get('/:number', users_controller.getUser);
 
+usersRouter.get('/:number/availability', users_controller.checkAvailability);
+
 usersRouter.put('/:number/changeSubscription', users_controller.changeSubscription)
 
 usersRouter.post('/', users_controller.post);
