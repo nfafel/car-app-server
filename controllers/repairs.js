@@ -2,7 +2,7 @@ const Repairs = require('../models/repairs');
 
 exports.get = async(req, res) => {
     try {
-        const result = await Repairs.find({});
+        const result = await Repairs.find({phoneNumber: req.params.number});
         res.send({repairs: result})
     } catch(err) {
         console.log(err)
@@ -24,6 +24,7 @@ exports.post = async(req, res) => {
     var newRepair;
     if (Object.values(req.query).length >= 1) {
         newRepair = new Repairs({
+            phoneNumber: req.query.phoneNumber,
             car_id: req.query.car_id,
             description: req.query.description,
             date: req.query.date,
@@ -33,6 +34,7 @@ exports.post = async(req, res) => {
         })
     } else {
         newRepair = new Repairs({
+            phoneNumber: req.body.phoneNumber,
             car_id: req.body.car_id,
             description: req.body.description,
             date: req.body.date,
@@ -44,7 +46,7 @@ exports.post = async(req, res) => {
 
     try {
         await newRepair.save();
-        const result = await Repairs.find({});
+        const result = await Repairs.find({phoneNumber: req.params.number});
         res.send({repairs: result})
     } catch(err) {
         console.log(err)
@@ -62,7 +64,7 @@ exports.put = async(req, res) => {
 
     try {
         await Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true });
-        const result = await Repairs.find({});
+        const result = await Repairs.find({phoneNumber: req.params.number});
         res.send({repairs: result})
     } catch(err) {
         console.log(err)
@@ -73,7 +75,7 @@ exports.put = async(req, res) => {
 exports.delete = async(req, res) => {
     try {
         await Repairs.findByIdAndRemove(req.params.id);
-        const result = await Repairs.find({});
+        const result = await Repairs.find({phoneNumber: req.params.number});
         res.send({repairs: result})
     } catch(err) {
         console.log(err)

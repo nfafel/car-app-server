@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 exports.get = async(req, res) => {
     try {
-        const result = await Cars.find({});
+        const result = await Cars.find({phoneNumber: req.params.number});
         res.send({cars: result})
     } catch(err) {
         console.log(err)
@@ -12,20 +12,21 @@ exports.get = async(req, res) => {
     }
 }
 
-exports.getById = async(req, res) => {
-    try {
-        const result = await Cars.findById(req.params.id);
-        res.send({car: result})
-    } catch(err) {
-        console.log(err)
-        res.status(400).send({message: "Error getting car data by ID"})
-    }
-}
+// exports.getById = async(req, res) => {
+//     try {
+//         const result = await Cars.findById(req.params.id);
+//         res.send({car: result})
+//     } catch(err) {
+//         console.log(err)
+//         res.status(400).send({message: "Error getting car data by ID"})
+//     }
+// }
 
 exports.post = async(req, res) => {
     var newCar;
     if (Object.values(req.query).length >= 1) {
         newCar = new Cars({
+            phoneNumber: req.query.phoneNumber,
             make: req.query.make,
             model: req.query.model,
             year: req.query.year,
@@ -33,6 +34,7 @@ exports.post = async(req, res) => {
         })
     } else {
         newCar = new Cars({
+            phoneNumber: req.body.phoneNumber,
             make: req.body.make,
             model: req.body.model,
             year: req.body.year,
@@ -42,7 +44,7 @@ exports.post = async(req, res) => {
 
     try {
         await newCar.save();
-        const result = await Cars.find({});
+        const result = await Cars.find({phoneNumber: req.params.number});
         res.send({cars: result})
     } catch(err) {
         console.log(err)
@@ -60,7 +62,7 @@ exports.put = async(req, res) => {
 
     try {
         await Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true });
-        const result = await Cars.find({});
+        const result = await Cars.find({phoneNumber: req.params.number});
         res.send({cars: result})
     } catch(err) {
         console.log(err)
@@ -72,7 +74,7 @@ exports.delete = async(req, res, next) => {
     try {
         await Repairs.deleteMany( {car_id: req.params.id} );
         await Cars.findByIdAndRemove(req.params.id);
-        const results = await Cars.find();
+        const results = await Cars.find({phoneNumber: req.params.number});
         res.send( {cars: results} );
     } catch(err) {
         throw err;
