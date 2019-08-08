@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-exports.getYears = async(req, res) => {
+exports.getYears = async() => {
     try{
         var response = await fetch('https://www.carqueryapi.com/api/0.3/?cmd=getYears', {
             headers: {
@@ -9,39 +9,39 @@ exports.getYears = async(req, res) => {
             }
         });
         var body = await response.json();
-        res.send(body);
+        return body.Years;
     } catch(err) {
         console.log(err);
         res.status(400).send({message: "Error getting car years data"})
     }
 }
 
-exports.getMakes = async(req, res) => {
+exports.getMakes = async(year) => {
     try {
-        var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${req.params.year}`, {
+        var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}`, {
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             }
         });
         var body = await response.json();
-        res.send(body);
+        return body.Makes;
     } catch(err) {
         console.log(err);
         res.status(400).send({message: "Error getting car makes data"})
     }
 }
 
-exports.getModels = async(req, res) => {
+exports.getModels = async(modelsInfo) => {
     try {
-        var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${req.params.make}&year=${req.params.year}`, {
+        var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${modelsInfo.make}&year=${modelsInfo.year}`, {
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             }
         });
         var body = await response.json();
-        res.send(body);
+        return body;
     } catch(err) {
         console.log(err);
         res.status(400).send({message: "Error getting car models data"})
