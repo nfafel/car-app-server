@@ -45,9 +45,8 @@ exports.post = async(req, res) => {
     }
 
     try {
-        await newRepair.save();
-        const result = await Repairs.find({phoneNumber: req.params.number});
-        res.send({repairs: result})
+        newRepair.save();
+        res.send({repair: newRepair})
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error posting new repair data"})
@@ -63,9 +62,8 @@ exports.put = async(req, res) => {
     }
 
     try {
-        await Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true });
-        const result = await Repairs.find({phoneNumber: req.params.number});
-        res.send({repairs: result})
+        const result = await Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true, new: true });
+        res.send({repair: result})
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error updating repair data"})
@@ -74,9 +72,8 @@ exports.put = async(req, res) => {
 
 exports.delete = async(req, res) => {
     try {
-        await Repairs.findByIdAndRemove(req.params.id);
-        const result = await Repairs.find({phoneNumber: req.params.number});
-        res.send({repairs: result})
+        Repairs.findByIdAndRemove(req.params.id);
+        res.send({repairId: req.params.id})
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error updating repair data"})

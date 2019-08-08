@@ -1,6 +1,5 @@
 const Cars = require('../models/cars');
 const Repairs = require('../models/repairs');
-const fetch = require('node-fetch');
 
 exports.get = async(req, res) => {
     try {
@@ -11,16 +10,6 @@ exports.get = async(req, res) => {
         res.status(400).send({message: "Error getting cars data"})
     }
 }
-
-// exports.getById = async(req, res) => {
-//     try {
-//         const result = await Cars.findById(req.params.id);
-//         res.send({car: result})
-//     } catch(err) {
-//         console.log(err)
-//         res.status(400).send({message: "Error getting car data by ID"})
-//     }
-// }
 
 exports.post = async(req, res) => {
     var newCar;
@@ -43,9 +32,8 @@ exports.post = async(req, res) => {
     }
 
     try {
-        await newCar.save();
-        const result = await Cars.find({phoneNumber: req.params.number});
-        res.send({cars: result})
+        newCar.save();
+        res.send({car: newCar})
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error posting car data"})
@@ -61,55 +49,21 @@ exports.put = async(req, res) => {
     }
 
     try {
-        await Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true });
-        const result = await Cars.find({phoneNumber: req.params.number});
-        res.send({cars: result})
+        const result = await Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true, new: true });
+        res.send({car: result})
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error updating car data"})
     }
 }
 
-exports.delete = async(req, res, next) => {
+exports.delete = async(req, res) => {
     try {
-        await Repairs.deleteMany( {car_id: req.params.id} );
-        await Cars.findByIdAndRemove(req.params.id);
-        const results = await Cars.find({phoneNumber: req.params.number});
-        res.send( {cars: results} );
+        Repairs.deleteMany( {car_id: req.params.id} );
+        Cars.findByIdAndRemove(req.params.id);
+        res.send( {carId: req.params.id} );
     } catch(err) {
-        throw err;
+        console.log(err);
+        res.status(400).send({message: "Error deleting car data"})
     }
-}
-
-exports.getYears = async(req, res, next) => {
-    var response = await fetch('https://www.carqueryapi.com/api/0.3/?cmd=getYears', {
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        }
-    });
-    var body = await response.json();
-    res.send(body);
-}
-
-exports.getMakes = async(req, res, next) => {
-    var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${req.params.year}`, {
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        }
-    });
-    var body = await response.json();
-    res.send(body);
-}
-
-exports.getModels = async(req, res, next) => {
-    var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${req.params.make}&year=${req.params.year}`, {
-        headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-        }
-    });
-    var body = await response.json();
-    res.send(body);
 }
