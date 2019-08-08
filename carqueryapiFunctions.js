@@ -41,7 +41,7 @@ exports.getModels = async(modelsInfo) => {
             }
         });
         var body = await response.json();
-        return body;
+        return body.Models;
     } catch(err) {
         console.log(err);
         res.status(400).send({message: "Error getting car models data"})
