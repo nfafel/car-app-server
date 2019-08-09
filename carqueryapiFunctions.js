@@ -16,9 +16,9 @@ exports.getYears = async() => {
     }
 }
 
-exports.getMakes = async(year) => {
+exports.getMakes = async(yearInfo) => {
     try {
-        var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${year}`, {
+        var response = await fetch(`https://www.carqueryapi.com/api/0.3/?cmd=getMakes&year=${yearInfo.year}`, {
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
