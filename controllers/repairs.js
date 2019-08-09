@@ -72,7 +72,7 @@ exports.put = async(req, res) => {
 
 exports.delete = async(req, res) => {
     try {
-        Repairs.findByIdAndRemove(req.params.id);
+        await Repairs.findByIdAndRemove(req.params.id);
         res.send({repairId: req.params.id})
     } catch(err) {
         console.log(err)
