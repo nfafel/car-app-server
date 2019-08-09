@@ -48,16 +48,19 @@ exports.typeDefs = gql`
         model_make_id: String!
     },
     input UserInput {
+        phoneNumber: String!
         password: String!
         subscribed: Boolean!
     }
     input CarInput {
+        phoneNumber: String!
         make: String!
         model: String!
         year: Int!
         rating: Int
     }
     input RepairInput {
+        phoneNumber: String!
         car_id: ID!
         description: String!
         date: String!
@@ -83,7 +86,7 @@ exports.typeDefs = gql`
         updateRepair(id: ID!, input: RepairInput): Repair!
         removeRepair(id: ID!): ID!
 
-        createuser(input: UserInput): User!
+        createUser(input: UserInput): User!
 
     }
     type Subscription {
@@ -103,15 +106,14 @@ exports.resolvers = {
     Query: {
         async cars(root, {phoneNumber}, context) {
             const result = await Cars.find({ phoneNumber: phoneNumber })
-            console.log(result);
             return result;
         },
         async repairs(root, {phoneNumber}, context) {
-            const result = await Repairs.find({phoneNumber: phoneNumber})
+            const result = await Repairs.find({ phoneNumber: phoneNumber })
             return result;
         },
         async user(root, {phoneNumber}, context) {
-            const result = await Users.find({phoneNumber: phoneNumber})
+            const result = await Users.findOne({ phoneNumber: phoneNumber })
             return result;
         },
         async repairsForCar(root, {carId}, context) {
@@ -193,6 +195,11 @@ exports.resolvers = {
             await Repairs.findByIdAndRemove(id);
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return id;
+        },
+        async createUser(root, {input}, context) {
+            const newUser = new Users(input);
+            await newUser.save();
+            return newUser;
         }
     },
     Subscription: {
