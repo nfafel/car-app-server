@@ -4,6 +4,7 @@ const client = require('twilio')(accountSid, authToken);
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 exports.sendConfirmation = async(req, res) => {
+    console.log(authToken)
     var confirmationNumber;
     if (Object.values(req.query).length >= 1) {
         confirmationNumber = req.query.confirmationNumber;
