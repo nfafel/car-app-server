@@ -67,7 +67,7 @@ exports.typeDefs = gql`
     }
     type Query {
         cars (phoneNumber: String!): [Car!]!
-        repairs (phoneNumber: Strng!): [Repair!]!
+        repairs (phoneNumber: String!): [Repair!]!
         user (phoneNumber: String!): User!
         repairsForCar(carId: ID!): [Repair!]!
         allYears: YearsRange!
