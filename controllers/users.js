@@ -58,15 +58,20 @@ exports.changeSubscription = async(req, res) => {
 }
 
 exports.post = async(req, res) => {
+    req.body.secret = randomWords();
     try {
-        var newUser = new Users({
-            phoneNumber: req.body.phoneNumber,
-            password: req.body.password,
-            subscribed: req.body.subscribed,
-            secret: randomWords()
-        });
+        var newUser = new Users(req.body);
         await newUser.save();
-        res.send({newUser: newUser});
+
+        const payload = {
+            phoneNumber: newUser.phoneNumber,
+            subscribed: newUser.subscribed
+        }
+        var token = jwt.sign({
+            payload: payload
+        }, newUser.secret, { expiresIn: 10 });
+        res.send({token: token})
+
     } catch(err) {
         console.log(err);
         res.status(400).send({message: "Error getting users"});
