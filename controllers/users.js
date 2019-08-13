@@ -21,7 +21,7 @@ exports.loginUser = async(req, res) => {
             }
             var token = jwt.sign({
                 payload: payload
-            }, user.secret, { expiresIn: 30 });
+            }, user.secret, { expiresIn: 10 });
             res.send({token: token})
         }
 
