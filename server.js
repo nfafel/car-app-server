@@ -1,10 +1,8 @@
 const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer} = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./graphQLServer');
-
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
 const http = require('http');
 
 const cars = require('./routes/cars'); // Imports routes for the cars

@@ -3,9 +3,9 @@ const carsRouter = express.Router();
 
 const cars_controller = require('../controllers/cars');
 
-carsRouter.get('/years', cars_controller.getYears);
+carsRouter.get('/', cars_controller.get);
 
-carsRouter.get('/:number', cars_controller.get);
+carsRouter.get('/years', cars_controller.getYears);
 
 carsRouter.get('/makes/:year', cars_controller.getMakes);
 

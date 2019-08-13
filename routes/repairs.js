@@ -3,7 +3,7 @@ const repairsRouter = express.Router();
 
 const repairs_controller = require('../controllers/repairs');
 
-repairsRouter.get('/:number', repairs_controller.get);
+repairsRouter.get('/', repairs_controller.get);
 
 repairsRouter.get('/:id/repairsForCar', repairs_controller.getByCarId)
 

@@ -5,10 +5,10 @@ const sms_controller = require('../controllers/sms');
 
 smsRouter.post('/reply', sms_controller.sendResponse);
 
-smsRouter.post('/sendConfirmation/:number', sms_controller.sendConfirmation);
+smsRouter.post('/:number/sendConfirmation', sms_controller.sendConfirmation);
 
-smsRouter.post('/notifyCar/:number', sms_controller.notifyCar);
+smsRouter.post('/:number/notifyCar', sms_controller.notifyCar);
 
-smsRouter.post('/notifyRepair/:number', sms_controller.notifyRepair);
+smsRouter.post('/:number/notifyRepair', sms_controller.notifyRepair);
 
 module.exports = smsRouter;

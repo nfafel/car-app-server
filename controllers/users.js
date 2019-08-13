@@ -1,24 +1,32 @@
+const jwt = require('jsonwebtoken');
+
 const Users = require('../models/users');
 const Cars = require('../models/cars');
 const Repairs = require('../models/repairs');
 
-exports.get = async(req, res) => {
+exports.loginUser = async(req, res) => {
+    const enteredPassword = req.body.password;
+    const phoneNumber = req.body.phoneNumber;
     try {
-        const result = await Users.find();
-        res.send({users: result})
-    } catch(err) {
-        console.log(err)
-        res.status(400).send({message: "Error getting users"})
-    }
-}
+        const user = await Users.findOne({phoneNumber: phoneNumber});
+        if (user === null) {
+            res.send({message: "The username you entered is not registered."})
+        } else if (user.password === enteredPassword) {
+            const payload = {
+                phoneNumber: user.phoneNumber,
+                subscribed: user.subscribed
+            }
+            var token = jwt.sign({
+                payload: payload
+            }, 'secret', { expiresIn: 60 * 60 });
+            res.send(token)
+        } else {
+            res.send({message: "Incorrect password"})
+        }
 
-exports.getUser = async(req, res) => {
-    try {
-        const user = await Users.findOne({phoneNumber: req.params.number});
-        res.send({user: user})
     } catch(err) {
         console.log(err)
-        res.status(400).send({message: "Error getting users"})
+        res.status(400).send({message: "Error Logging in User"})
     }
 }
 
