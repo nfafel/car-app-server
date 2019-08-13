@@ -19,7 +19,7 @@ exports.loginUser = async(req, res) => {
             var token = jwt.sign({
                 payload: payload
             }, 'secret', { expiresIn: 60 * 60 });
-            res.send(token)
+            res.send({token: token})
         } else {
             res.send({message: "Incorrect password"})
         }
