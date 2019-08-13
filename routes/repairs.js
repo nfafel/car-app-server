@@ -2,15 +2,16 @@ const express = require('express');
 const repairsRouter = express.Router();
 
 const repairs_controller = require('../controllers/repairs');
+const verifyJWT_controller = require('../controllers/verifyJWT');
 
-repairsRouter.get('/', repairs_controller.get);
+repairsRouter.get('/', verifyJWT_controller.verifyJWT, repairs_controller.get);
 
-repairsRouter.get('/:id/repairsForCar', repairs_controller.getByCarId)
+repairsRouter.get('/:id/repairsForCar', verifyJWT_controller.verifyJWT, repairs_controller.getByCarId)
 
-repairsRouter.post('/', repairs_controller.post);
+repairsRouter.post('/', verifyJWT_controller.verifyJWT, repairs_controller.post);
 
-repairsRouter.put('/:id', repairs_controller.put);
+repairsRouter.put('/:id', verifyJWT_controller.verifyJWT, repairs_controller.put);
 
-repairsRouter.delete('/:id', repairs_controller.delete);
+repairsRouter.delete('/:id', verifyJWT_controller.verifyJWT, repairs_controller.delete);
 
 module.exports = repairsRouter;

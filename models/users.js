@@ -15,6 +15,10 @@ let UsersSchema = new Schema({
     subscribed: {
         type: Boolean,
         required: true
+    },
+    secret: {
+        type: String,
+        required: true
     }
 });
 

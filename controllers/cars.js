@@ -4,7 +4,7 @@ const carInfo = require('../carqueryapiFunctions')
 
 exports.get = async(req, res) => {
     try {
-        const result = await Cars.find({phoneNumber: req.params.number});
+        const result = await Cars.find({phoneNumber: req.payload.phoneNumber});
         res.send({cars: result})
     } catch(err) {
         console.log(err)
@@ -13,27 +13,9 @@ exports.get = async(req, res) => {
 }
 
 exports.post = async(req, res) => {
-    var newCar;
-    if (Object.values(req.query).length >= 1) {
-        newCar = new Cars({
-            phoneNumber: req.query.phoneNumber,
-            make: req.query.make,
-            model: req.query.model,
-            year: req.query.year,
-            rating: req.query.rating
-        })
-    } else {
-        newCar = new Cars({
-            phoneNumber: req.body.phoneNumber,
-            make: req.body.make,
-            model: req.body.model,
-            year: req.body.year,
-            rating: req.body.rating
-        })
-    }
-
     try {
-        newCar.save();
+        var newCar = new Cars(req.body)
+        await newCar.save();
         res.send({car: newCar})
     } catch(err) {
         console.log(err)
@@ -42,13 +24,7 @@ exports.post = async(req, res) => {
 }
 
 exports.put = async(req, res) => {
-    var carUpdates;
-    if (Object.values(req.query).length >= 1) {
-        carUpdates = req.query;
-    } else {
-        carUpdates = req.body;
-    }
-
+    var carUpdates = req.body;
     try {
         const result = await Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true, new: true });
         res.send({car: result})

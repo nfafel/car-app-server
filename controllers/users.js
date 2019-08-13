@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const randomWords = require('random-words');
 
 const Users = require('../models/users');
 const Cars = require('../models/cars');
@@ -11,17 +12,17 @@ exports.loginUser = async(req, res) => {
         const user = await Users.findOne({phoneNumber: phoneNumber});
         if (user === null) {
             res.send({message: "The username you entered is not registered."})
-        } else if (user.password === enteredPassword) {
+        } else if (user.password !== enteredPassword) {
+            res.send({message: "Incorrect password"})
+        } else {
             const payload = {
                 phoneNumber: user.phoneNumber,
                 subscribed: user.subscribed
             }
             var token = jwt.sign({
                 payload: payload
-            }, 'secret', { expiresIn: 60 * 60 });
+            }, user.secret, { expiresIn: 60 * 60 });
             res.send({token: token})
-        } else {
-            res.send({message: "Incorrect password"})
         }
 
     } catch(err) {
@@ -45,12 +46,7 @@ exports.checkAvailability = async(req, res) => {
 }
 
 exports.changeSubscription = async(req, res) => {
-    var updatedSubscription;
-    if (Object.values(req.query).length >= 1) {
-        updatedSubscription = req.query.subscribed;
-    } else {
-        updatedSubscription = req.body.subscribed;
-    }
+    var updatedSubscription = req.body.subscribed;
 
     try {
         const updatedUser = await Users.findOneAndUpdate({phoneNumber: req.params.number}, {subscribed: updatedSubscription}, { new: true });
@@ -62,22 +58,13 @@ exports.changeSubscription = async(req, res) => {
 }
 
 exports.post = async(req, res) => {
-    var newUser;
-    if (Object.values(req.query).length >= 1) {
-        newUser = new Users({
-            phoneNumber: req.query.phoneNumber,
-            password: req.query.password,
-            subscribed: req.query.subscribed
-        });
-    } else {
-        newUser = new Users({
+    try {
+        var newUser = new Users({
             phoneNumber: req.body.phoneNumber,
             password: req.body.password,
-            subscribed: req.body.subscribed
+            subscribed: req.body.subscribed,
+            secret: randomWords()
         });
-    }
-
-    try {
         await newUser.save();
         res.send({newUser: newUser});
     } catch(err) {
