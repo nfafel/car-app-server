@@ -13,6 +13,6 @@ exports.verifyJWT = async(req, res, next) => {
         next()
     } catch(err) {
         console.log(err);
-        res.status(400).send({message: "Invalid JWT"})
+        res.status(401).send({message: "Invalid JWT"})
     }
 }
