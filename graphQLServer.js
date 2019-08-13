@@ -1,4 +1,4 @@
-const { ApolloServer, gql, PubSub } = require("apollo-server");
+const { gql, PubSub } = require("apollo-server");
 const fetch = require('node-fetch');
 const Cars = require('./models/cars');
 const Repairs = require('./models/repairs');
@@ -13,6 +13,7 @@ exports.typeDefs = gql`
         phoneNumber: String!
         password: String!
         subscribed: Boolean!
+        secret: String!
     }
     type Car {
         _id: ID!
@@ -51,6 +52,7 @@ exports.typeDefs = gql`
         phoneNumber: String!
         password: String!
         subscribed: Boolean!
+        secret: String!
     }
     input CarInput {
         phoneNumber: String!
@@ -87,7 +89,7 @@ exports.typeDefs = gql`
         removeRepair(id: ID!): ID!
 
         createUser(input: UserInput): User!
-
+        
     }
     type Subscription {
         carChanged: [Car!]!

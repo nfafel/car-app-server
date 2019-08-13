@@ -33,7 +33,7 @@ exports.loginUser = async(req, res) => {
 
 exports.checkAvailability = async(req, res) => {
     try {
-        const user = await Users.findOne({phoneNumber: req.params.number});
+        const user = await Users.findOne({phoneNumber: req.params.phoneNumber});
         if (user === null) {
             res.send({available: true})
         } else {
@@ -49,7 +49,7 @@ exports.changeSubscription = async(req, res) => {
     var updatedSubscription = req.body.subscribed;
 
     try {
-        const updatedUser = await Users.findOneAndUpdate({phoneNumber: req.params.number}, {subscribed: updatedSubscription}, { new: true });
+        const updatedUser = await Users.findOneAndUpdate({phoneNumber: req.body.phoneNnumber}, {subscribed: updatedSubscription}, { new: true });
         res.send({user: updatedUser})
     } catch(err) {
         console.log(err)

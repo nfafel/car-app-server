@@ -3,7 +3,7 @@ const usersRouter = express.Router();
 
 const users_controller = require('../controllers/users');
 
-usersRouter.get('/availability', users_controller.checkAvailability);
+usersRouter.get('/:phoneNumber/availability', users_controller.checkAvailability);
 
 usersRouter.put('/changeSubscription', users_controller.changeSubscription)
 
