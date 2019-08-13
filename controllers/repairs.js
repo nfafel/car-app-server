@@ -20,7 +20,8 @@ exports.getByCarId = async(req, res) => {
     }
 }
 
-exports.post = async(req, res) => {    
+exports.post = async(req, res) => {   
+    req.body.phoneNumber = req.payload.phoneNumber; 
     try {
         var newRepair = new Repairs(req.body);
         await newRepair.save();
@@ -32,8 +33,8 @@ exports.post = async(req, res) => {
 }
 
 exports.put = async(req, res) => {
+    req.body.phoneNumber = req.payload.phoneNumber;
     var repairUpdates = req.body;
-
     try {
         const result = await Repairs.findByIdAndUpdate(req.params.id, {'$set': repairUpdates}, { runValidators: true, new: true });
         res.send({repair: result})

@@ -13,6 +13,7 @@ exports.get = async(req, res) => {
 }
 
 exports.post = async(req, res) => {
+    req.body.phoneNumber = req.payload.phoneNumber;
     try {
         var newCar = new Cars(req.body)
         await newCar.save();
@@ -24,6 +25,7 @@ exports.post = async(req, res) => {
 }
 
 exports.put = async(req, res) => {
+    req.body.phoneNumber = req.payload.phoneNumber;
     var carUpdates = req.body;
     try {
         const result = await Cars.findByIdAndUpdate(req.params.id, {'$set': carUpdates}, { runValidators: true, new: true });
