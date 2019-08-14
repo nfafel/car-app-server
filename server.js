@@ -37,7 +37,7 @@ app.use(cors());
 app.use('/cars', cars);
 app.use('/repairs', repairs);
 app.use('/sms', sms);
-app.use('/users', users)
+app.use('/users', users);
 
 app.get('/version', (req, res, next) => {
     res.send( {version: `Current version of Node: ${process.version}`} );
