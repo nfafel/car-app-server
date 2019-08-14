@@ -15,7 +15,7 @@ const checkAuthentication = (context) => {
     if (context.authenticationError) {
         console.log(context.authenticationError);
         var error = new AuthenticationError("Unauthorized");
-        error.status = 401;
+        error.statusCode = 401;
         throw error;
     }
 }
