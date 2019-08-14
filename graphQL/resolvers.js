@@ -82,6 +82,7 @@ exports.resolvers = {
     Mutation: {
         async createCar(root, {input}, context) {
             checkAuthentication(context);
+            input.phoneNumber = context.phoneNumber;
             const newCar = new Cars(input);
             await newCar.save();
             //pubsub.publish("CAR_CHANGED", { carChanged: result })
@@ -89,6 +90,7 @@ exports.resolvers = {
         },
         async updateCar(root, {id, input}, context) {
             checkAuthentication(context);
+            input.phoneNumber = context.phoneNumber;
             const result = await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
             //pubsub.publish("CAR_CHANGED", { carChanged: result })
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
@@ -106,6 +108,7 @@ exports.resolvers = {
 
         async createRepair(root, {input}, context) {
             checkAuthentication(context);
+            input.phoneNumber = context.phoneNumber;
             const newRepair = new Repairs(input);
             await newRepair.save();
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
@@ -113,6 +116,7 @@ exports.resolvers = {
         },
         async updateRepair(root, {id, input}, context) {
             checkAuthentication(context);
+            input.phoneNumber = context.phoneNumber;
             const result = await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return result;

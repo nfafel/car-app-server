@@ -48,14 +48,12 @@ exports.typeDefs = gql`
         secret: String!
     }
     input CarInput {
-        phoneNumber: String!
         make: String!
         model: String!
         year: Int!
         rating: Int
     }
     input RepairInput {
-        phoneNumber: String!
         car_id: ID!
         description: String!
         date: String!
