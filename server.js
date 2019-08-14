@@ -1,10 +1,13 @@
 const express = require('express');
 const { ApolloServer} = require('apollo-server-express');
-const { typeDefs, resolvers } = require('./graphQLServer');
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const http = require('http');
 
+const { typeDefs } = require('./graphQL/typeDefs');
+const { resolvers } = require('./graphQL/resolvers');
+const { contextFunc } = require('./graphQL/context');
 const cars = require('./routes/cars'); // Imports routes for the cars
 const repairs = require('./routes/repairs'); // Imports routes for the repairs
 //const sms = require('./routes/sms'); // Imports routes for twilio messaging
@@ -42,8 +45,9 @@ app.get('/version', (req, res, next) => {
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers
-})
+    resolvers,
+    context: ({ req }) => contextFunc(req)
+});
 
 server.applyMiddleware({app});
 
@@ -54,6 +58,6 @@ const PORT = process.env.PORT || 5000;
 
 httpServer.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
-});  
+});
 
 module.exports = httpServer;

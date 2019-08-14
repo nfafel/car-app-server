@@ -1,101 +1,22 @@
-const { gql, PubSub } = require("apollo-server");
+const { PubSub } = require("apollo-server");
 const fetch = require('node-fetch');
-const Cars = require('./models/cars');
-const Repairs = require('./models/repairs');
-const Users = require('./models/users');
+const Cars = require('../models/cars');
+const Repairs = require('../models/repairs');
+const Users = require('../models/users');
 const {GraphQLScalarType} = require('graphql');
+const jwt = require('jsonwebtoken')
+const randomWords = require('random-words');
+
+const { AuthenticationError } = require ('apollo-server')
 
 const pubsub = new PubSub();
- 
-exports.typeDefs = gql`
-    type User {
-        _id: ID!
-        phoneNumber: String!
-        password: String!
-        subscribed: Boolean!
-        secret: String!
-    }
-    type Car {
-        _id: ID!
-        phoneNumber: String!
-        make: String!
-        model: String!
-        year: Int!
-        rating: Int!
-    }
-    scalar Date
-    type Repair {
-        _id: ID!
-        phoneNumber: String!
-        car: Car!
-        description: String!
-        date: Date!
-        cost: Int!
-        progress: String!
-        technician: String!
-    }
-    type YearsRange {
-        min_year: Int!
-        max_year: Int!
-    }
-    type Make {
-        make_id: String!
-        make_display: String!
-        make_is_common: String!
-        make_country: String!
-    } 
-    type Model {
-        model_name: String!
-        model_make_id: String!
-    },
-    input UserInput {
-        phoneNumber: String!
-        password: String!
-        subscribed: Boolean!
-        secret: String!
-    }
-    input CarInput {
-        phoneNumber: String!
-        make: String!
-        model: String!
-        year: Int!
-        rating: Int
-    }
-    input RepairInput {
-        phoneNumber: String!
-        car_id: ID!
-        description: String!
-        date: String!
-        cost: Int!
-        progress: String!
-        technician: String!
-    }
-    type Query {
-        cars (phoneNumber: String!): [Car!]!
-        repairs (phoneNumber: String!): [Repair!]!
-        user (phoneNumber: String!): User!
-        repairsForCar(carId: ID!): [Repair!]!
-        allYears: YearsRange!
-        allMakes(year: Int!): [Make!]!
-        allModels(year: Int!, make: String!): [Model!]!
-    }
-    type Mutation {
-        createCar(input: CarInput): Car!
-        updateCar(id: ID!, input: CarInput): Car!
-        removeCar(id: ID!): ID!
 
-        createRepair(input: RepairInput): Repair!
-        updateRepair(id: ID!, input: RepairInput): Repair!
-        removeRepair(id: ID!): ID!
-
-        createUser(input: UserInput): User!
-        
+const checkAuthentication = (context) => {
+    if (context.authenticationError) {
+        console.log(context.authenticationError);
+        throw new AuthenticationError("Unauthorized");
     }
-    type Subscription {
-        carChanged: [Car!]!
-        repairChanged: [Repair!]!
-    }
-`;
+}
 
 // Provide resolver functions for your schema fields
 exports.resolvers = {
@@ -106,19 +27,18 @@ exports.resolvers = {
         }
     }),
     Query: {
-        async cars(root, {phoneNumber}, context) {
-            const result = await Cars.find({ phoneNumber: phoneNumber })
+        async cars(root, args, context) {
+            checkAuthentication(context);
+            const result = await Cars.find({ phoneNumber: context.phoneNumber });
             return result;
         },
-        async repairs(root, {phoneNumber}, context) {
-            const result = await Repairs.find({ phoneNumber: phoneNumber })
-            return result;
-        },
-        async user(root, {phoneNumber}, context) {
-            const result = await Users.findOne({ phoneNumber: phoneNumber })
+        async repairs(root, args, context) {
+            checkAuthentication(context);
+            const result = await Repairs.find({ phoneNumber: context.phoneNumber })
             return result;
         },
         async repairsForCar(root, {carId}, context) {
+            checkAuthentication(context);
             const results = await Repairs.find({car_id: carId});
             return results;
         },
@@ -161,48 +81,93 @@ exports.resolvers = {
     },
     Mutation: {
         async createCar(root, {input}, context) {
+            checkAuthentication(context);
             const newCar = new Cars(input);
             await newCar.save();
             //pubsub.publish("CAR_CHANGED", { carChanged: result })
             return newCar;
         },
         async updateCar(root, {id, input}, context) {
+            checkAuthentication(context);
             const result = await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
-            const result = await Cars.find();
             //pubsub.publish("CAR_CHANGED", { carChanged: result })
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
             return result;
         },
         async removeCar(root, {id}, context) {
+            checkAuthentication(context);
             await Cars.findByIdAndRemove(id);
             await Repairs.deleteMany({car_id: id});
-            const newRepairs = await Repairs.find();
+            //const newRepairs = await Repairs.find();
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
             //pubsub.publish("CAR_CHANGED", { carChanged: result })
             return id;
         },
 
         async createRepair(root, {input}, context) {
+            checkAuthentication(context);
             const newRepair = new Repairs(input);
             await newRepair.save();
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return newRepair;
         },
         async updateRepair(root, {id, input}, context) {
+            checkAuthentication(context);
             const result = await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return result;
         },
         async removeRepair(root, {id}, context) {
+            checkAuthentication(context);
             await Repairs.findByIdAndRemove(id);
             //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
             return id;
         },
+
         async createUser(root, {input}, context) {
-            const newUser = new Users(input);
-            await newUser.save();
-            return newUser;
+            input.secret = randomWords();
+            try {
+                const newUser = new Users(input);
+                await newUser.save();
+                
+                const payload = {
+                    phoneNumber: newUser.phoneNumber,
+                    subscribed: newUser.subscribed
+                }
+                var token = jwt.sign({
+                    payload: payload
+                }, newUser.secret, { expiresIn: 10 });
+                return token
+
+            } catch(err) {
+                throw new Error("Error creating user")
+            }
+            
+        },
+        async loginUser(root, {phoneNumber, password}, context) {
+            try {
+                const user = await Users.findOne({phoneNumber: phoneNumber});
+                if (user === null) {
+                    throw new Error("The username you entered is not registered.");
+                } else if (user.password !== password) {
+                    throw new Error("Incorrect password")
+                } else {
+                    const payload = {
+                        phoneNumber: user.phoneNumber,
+                        subscribed: user.subscribed
+                    }
+                    var token = jwt.sign({
+                        payload: payload
+                    }, user.secret, { expiresIn: 60*60 });
+                    return token;
+                }
+        
+            } catch(err) {
+                console.log(err)
+                throw new Error("Error Logging in User");
+            }
         }
+
     },
     Subscription: {
         carChanged: {
