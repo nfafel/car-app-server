@@ -140,7 +140,7 @@ exports.resolvers = {
                 }
                 var token = jwt.sign({
                     payload: payload
-                }, newUser.secret, { expiresIn: 10 });
+                }, newUser.secret, { expiresIn: '2h' });
                 return token
 
             } catch(err) {
@@ -165,7 +165,7 @@ exports.resolvers = {
                 }
                 var token = jwt.sign({
                     payload: payload
-                }, user.secret, { expiresIn: 60*60 });
+                }, user.secret, { expiresIn: 5 });
                 return token;
             }
         }
