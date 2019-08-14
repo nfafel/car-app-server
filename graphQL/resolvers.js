@@ -145,26 +145,26 @@ exports.resolvers = {
             
         },
         async loginUser(root, {phoneNumber, password}, context) {
+            var user;
             try {
-                const user = await Users.findOne({phoneNumber: phoneNumber});
-                if (user === null) {
-                    throw new Error("The username you entered is not registered.");
-                } else if (user.password !== password) {
-                    throw new Error("Incorrect password")
-                } else {
-                    const payload = {
-                        phoneNumber: user.phoneNumber,
-                        subscribed: user.subscribed
-                    }
-                    var token = jwt.sign({
-                        payload: payload
-                    }, user.secret, { expiresIn: 60*60 });
-                    return token;
-                }
-        
+                user = await Users.findOne({phoneNumber: phoneNumber});
             } catch(err) {
-                console.log(err)
-                throw new Error("Error Logging in User");
+                throw new Error("Error loggin in user")
+            }
+
+            if (user === null) {
+                throw new Error("The username you entered is not registered.");
+            } else if (user.password !== password) {
+                throw new Error("Incorrect password")
+            } else {
+                const payload = {
+                    phoneNumber: user.phoneNumber,
+                    subscribed: user.subscribed
+                }
+                var token = jwt.sign({
+                    payload: payload
+                }, user.secret, { expiresIn: 60*60 });
+                return token;
             }
         }
 
