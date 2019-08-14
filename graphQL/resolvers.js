@@ -165,7 +165,7 @@ exports.resolvers = {
                 }
                 var token = jwt.sign({
                     payload: payload
-                }, user.secret, { expiresIn: 5 });
+                }, user.secret, { expiresIn: 20 });
                 return token;
             }
         }
