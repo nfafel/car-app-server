@@ -149,13 +149,11 @@ exports.resolvers = {
             try {
                 user = await Users.findOne({phoneNumber: phoneNumber});
             } catch(err) {
-                throw new Error("Error loggin in user")
+                throw new Error("Error logging in user")
             }
 
-            if (user === null) {
-                throw new Error("The username you entered is not registered.");
-            } else if (user.password !== password) {
-                throw new Error("Incorrect password")
+            if (user === null || user.password !== password) {
+                throw new Error("Invalid Credentials");
             } else {
                 const payload = {
                     phoneNumber: user.phoneNumber,
