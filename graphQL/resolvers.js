@@ -14,7 +14,9 @@ const pubsub = new PubSub();
 const checkAuthentication = (context) => {
     if (context.authenticationError) {
         console.log(context.authenticationError);
-        throw new AuthenticationError("Unauthorized");
+        var error = new AuthenticationError("Unauthorized");
+        error.status = 401;
+        throw error;
     }
 }
 
