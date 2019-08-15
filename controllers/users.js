@@ -50,7 +50,7 @@ exports.changeSubscription = async(req, res) => {
 
     try {
         await Users.findOneAndUpdate({phoneNumber: req.body.phoneNumber}, {subscribed: updatedSubscription}, { new: true });
-        res.send({ updatedSubscription: updatedSubscription });
+        res.send(updatedSubscription);
     } catch(err) {
         console.log(err)
         res.status(400).send({message: "Error updating subscription data"})
