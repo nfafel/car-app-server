@@ -49,7 +49,7 @@ exports.changeSubscription = async(req, res) => {
     var updatedSubscription = req.body.subscribed;
 
     try {
-        await Users.findOneAndUpdate({phoneNumber: req.body.phoneNumber}, {subscribed: updatedSubscription}, { new: true });
+        await Users.findOneAndUpdate({phoneNumber: req.payload.phoneNumber}, {subscribed: updatedSubscription}, { new: true });
         res.send(updatedSubscription);
     } catch(err) {
         console.log(err)
