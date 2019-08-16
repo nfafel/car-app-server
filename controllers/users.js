@@ -21,7 +21,7 @@ exports.loginUser = async(req, res) => {
             }
             var token = jwt.sign({
                 payload: payload
-            }, user.secret, { expiresIn: 60*60 });
+            }, user.secret, { expiresIn: '12h' });
             res.send({token: token})
         }
 
@@ -69,7 +69,7 @@ exports.post = async(req, res) => {
         }
         var token = jwt.sign({
             payload: payload
-        }, newUser.secret, { expiresIn: 10 });
+        }, newUser.secret, { expiresIn: '12h' });
         res.send({token: token})
 
     } catch(err) {
