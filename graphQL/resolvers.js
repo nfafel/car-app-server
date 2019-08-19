@@ -12,9 +12,9 @@ const { AuthenticationError } = require ('apollo-server')
 const pubsub = new PubSub();
 
 const checkAuthentication = (context) => {
-    if (context.authenticationError) {
-        console.log(context.authenticationError);
-        throw new AuthenticationError("Unauthorized");
+    if (!context.authenticationVerified) {
+        console.log("Unauthenticated");
+        throw new AuthenticationError("Unauthenticated");
     }
 }
 
