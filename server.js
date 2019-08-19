@@ -46,7 +46,7 @@ app.get('/version', (req, res, next) => {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    //context: ({ req }) => contextFunc(req)
+    context: ({ req }) => contextFunc(req)
 });
 
 server.applyMiddleware({app});
