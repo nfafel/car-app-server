@@ -19,5 +19,6 @@ exports.contextFunc = async( req ) => {
             return {authenticationVerified: false}
         }
     } 
+    console.log("hello")
     return {authenticationVerified: false}
 }
