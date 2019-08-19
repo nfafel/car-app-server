@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models/users');
 
 exports.contextFunc = async( req ) => {
-    console.log(typeof(req.headers.authorization) + "  " + req.headers.authorization);
-    if (req.headers.authorization !== "null") {
+    if (req.headers.authorization !== "") {
         try {
             const token = req.headers.authorization.split(" ")[1];
             const decoded = jwt.decode(token);
@@ -19,6 +18,5 @@ exports.contextFunc = async( req ) => {
             return {authenticationVerified: false}
         }
     } 
-    console.log("hello");
     return {authenticationVerified: false}
 }
