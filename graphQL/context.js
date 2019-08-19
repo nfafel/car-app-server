@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models/users');
 
 exports.contextFunc = async( req ) => {
+    console.log(req.headers.authorization)
     if (req.headers.authorization !== null) {
         try {
             const token = req.headers.authorization.split(" ")[1];
