@@ -14,6 +14,7 @@ exports.contextFunc = async( req ) => {
             context.authenticationVerified = true;
             return context;
         } catch(err) {
+            console.log(err);
             return {authenticationVerified: false}
         }
     } 
