@@ -28,7 +28,7 @@ exports.resolvers = {
     }),
     Query: {
         async cars(root, args, context) {
-            console.log(context);
+            checkAuthentication(context);
             const result = await Cars.find({ phoneNumber: context.phoneNumber });
             return result;
         },
