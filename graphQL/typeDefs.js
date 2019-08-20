@@ -82,7 +82,11 @@ exports.typeDefs = gql`
         loginUser(phoneNumber: String!, password: String!): String!
     }
     type Subscription {
-        carChanged: [Car!]!
-        repairChanged: [Repair!]!
+        carCreated: Car!
+        carUpdated: Car!
+        carRemoved: ID!
+        repairCreated: Repair!
+        repairUpdated: Repair!
+        repairRemoved: ID!
     }
 `;

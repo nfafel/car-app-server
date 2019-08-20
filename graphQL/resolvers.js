@@ -85,24 +85,21 @@ exports.resolvers = {
             input.phoneNumber = context.phoneNumber;
             const newCar = new Cars(input);
             await newCar.save();
-            //pubsub.publish("CAR_CHANGED", { carChanged: result })
+            pubsub.publish("CAR_CREATED", { carCreated: newCar })
             return newCar;
         },
         async updateCar(root, {id, input}, context) {
             checkAuthentication(context);
             input.phoneNumber = context.phoneNumber;
-            const result = await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
-            //pubsub.publish("CAR_CHANGED", { carChanged: result })
-            //pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
+            const result = await Cars.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true });
+            pubsub.publish("CAR_UPDATED", { carUpdated: result })
             return result;
         },
         async removeCar(root, {id}, context) {
             checkAuthentication(context);
             await Cars.findByIdAndRemove(id);
             await Repairs.deleteMany({car_id: id});
-            //const newRepairs = await Repairs.find();
-            //pubsub.publish("REPAIR_CHANGED", { repairChanged: newRepairs })
-            //pubsub.publish("CAR_CHANGED", { carChanged: result })
+            pubsub.publish("CAR_REMOVED", { carRemoved: id });
             return id;
         },
 
@@ -111,20 +108,20 @@ exports.resolvers = {
             input.phoneNumber = context.phoneNumber;
             const newRepair = new Repairs(input);
             await newRepair.save();
-            //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
+            pubsub.publish("REPAIR_CREATED", { repairCreated: newRepair })
             return newRepair;
         },
         async updateRepair(root, {id, input}, context) {
             checkAuthentication(context);
             input.phoneNumber = context.phoneNumber;
             const result = await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
-            //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
+            pubsub.publish("REPAIR_UPDATED", { repairUpdated: updatedRepair })
             return result;
         },
         async removeRepair(root, {id}, context) {
             checkAuthentication(context);
             await Repairs.findByIdAndRemove(id);
-            //pubsub.publish("REPAIR_CHANGED", { repairChanged: result })
+            pubsub.publish("REPAIR_REMOVED", { repairRemoved: id })
             return id;
         },
 
@@ -172,11 +169,23 @@ exports.resolvers = {
 
     },
     Subscription: {
-        carChanged: {
-            subscribe: () => pubsub.asyncIterator("CAR_CHANGED")
+        carCreated: {
+            subscribe: () => pubsub.asyncIterator("CAR_CREATED")
         },
-        repairChanged: {
-            subscribe: () => pubsub.asyncIterator("REPAIR_CHANGED")
-        }
+        carUpdated: {
+            subscribe: () => pubsub.asyncIterator("CAR_UPDATED")
+        },
+        carRemoved: {
+            subscribe: () => pubsub.asyncIterator("CAR_REMOVED")
+        },
+        repairCreated: {
+            subscribe: () => pubsub.asyncIterator("REPAIR_CREATED")
+        },
+        repairUpdated: {
+            subscribe: () => pubsub.asyncIterator("REPAIR_UPDATED")
+        },
+        repairRemoved: {
+            subscribe: () => pubsub.asyncIterator("REPAIR_REMOVED")
+        },
     }
 };
