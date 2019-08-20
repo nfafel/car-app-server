@@ -115,7 +115,7 @@ exports.resolvers = {
             checkAuthentication(context);
             input.phoneNumber = context.phoneNumber;
             const result = await Repairs.findByIdAndUpdate(id, {'$set': input}, { runValidators: true, new: true })
-            pubsub.publish("REPAIR_UPDATED", { repairUpdated: updatedRepair })
+            pubsub.publish("REPAIR_UPDATED", { repairUpdated: result })
             return result;
         },
         async removeRepair(root, {id}, context) {
