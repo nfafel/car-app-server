@@ -22,7 +22,6 @@ var MONGODB;
 if (process.env.NODE_ENV == 'test') {
     MONGODB = process.env.MONGODBTEST || "mongodb://localhost:27017";
 } else {
-    process.env['MONGODB'] = "mongodb+srv://nfafel:Pmwrestling1!@myreactapp-swhip.mongodb.net/myReactAppDb?retryWrites=true&w=majority"
     MONGODB = process.env.MONGODB || "mongodb://localhost:27017";
 }
 
