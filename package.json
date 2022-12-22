@@ -22,7 +22,7 @@
     "express-http-proxy": "^1.5.1",
     "graphql": "^14.4.2",
     "http-proxy-middleware": "^0.19.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^3.2.7",
     "mongoose": "^5.6.0",
     "ngrok": "^3.2.4",
